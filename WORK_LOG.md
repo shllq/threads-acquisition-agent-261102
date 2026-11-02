@@ -203,3 +203,9 @@ Remaining: structural browser extraction, share-resolution live checks, natural-
 2. Rewrote `README.md` as a 75-line reviewer guide: purpose, private repository access, dependency/browser/key setup, original assignment command, requested fields, actual result/trace links, design, verification, known limitations and AI assistance. Removed repeated probe/milestone/history detail from the entry point; retained dedicated findings, contracts, security and work-log references. No production behavior, examples, assignment bytes or dependencies changed.
 3. Checked every local README link and parsed the linked result/trace JSON. Assignment checksum and whitespace checks passed. No artificial test was added for a prose-only rewrite; application tests, paid calls and browser installation were not repeated. crapper/dryer/mutator are unavailable and not relevant to this documentation change.
 4. Kept existing findings/artifacts and untracked notes; no safe cleanup target was identified. Commit this documentation unit and push normally to the configured main line, without changing repository visibility or reviewer permissions.
+
+## README 繁體中文化
+
+1. 依使用者要求，將精簡版 `README.md` 改為臺灣繁體中文，保留原有結構、CLI 指令、JSON 欄位名稱、連結、驗證範圍與已知限制；未修改程式行為或原始題目。
+2. 確認工作目錄僅有原本未追蹤的 `notes.md`，並保留不動。檢查 README 本機連結、範例 JSON、題目校驗碼與空白格式；文件翻譯不另加形式化測試，也不重跑應用程式或付費模型測試。
+3. 無需刪除現有檔案或證據；此變更僅提交 README 與工作紀錄，正常推送至既有 `origin/main`，不調整儲存庫權限。

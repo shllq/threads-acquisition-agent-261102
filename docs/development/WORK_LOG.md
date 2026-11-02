@@ -286,3 +286,12 @@ Remaining: structural browser extraction, share-resolution live checks, natural-
 3. Created the public repository at `https://github.com/shllq/threads-acquisition-agent-261102`. Updated README clone/source links to that actual destination and clarified current public access versus historical private-delivery observations in the assignment report. Included the pending company-neutral documentation cleanup; left original assignment bytes and untracked notes unchanged.
 4. Full offline suite passed 58 tests with ten paid/network tests skipped; assignment checksum, whitespace and local documentation link checks passed. No new paid/model or public-page acquisition was performed. crapper/dryer/mutator remain unavailable. No cleanup/deletion of evidence, credentials or notes was needed.
 5. Commit this publication unit, retain the old remote as `private-origin`, configure new `origin` for the public destination, and push all local branches/tags without rewriting existing commit identities. Verify public visibility, default branch, remote/local commit identity and that every pre-publication commit remains reachable. Do not push the new publication commit to the old private repository.
+
+## 審閱交付指南與 ZIP 封裝
+
+1. 依使用者要求，將交付整理成容易驗證的格式。先確認最新公開儲存庫、六組 CLI 證據、58 項離線測試及四組模型回歸；沿用既有指令，不新增驗證框架、依賴或 production code。原本未追蹤的 `notes.md` 保留不動。
+2. 新增根目錄 `REVIEW.md`，以繁體中文依序提供不安裝的六例檢查表、不需金鑰的成果測試、完整離線／安全測試、選擇性付費 CLI 與完整回歸，附預期結果、需求檢查入口、用量範圍及失敗判讀。README 加入單一審閱入口，避免要求審閱者自行拼接所有文件。
+3. 用 Git 暫存樹匯出候選 ZIP，解壓至新建的獨立暫存目錄，逐一比對 66 個追蹤檔案位元組；確認沒有 `.git/`、真實 `.env`、`notes.md`、依賴與本機 artifacts。沒有讀取或複製實際金鑰；不自行重新發布既有本機產物。
+4. 在解壓目錄執行 `npm ci`、成果測試、完整離線測試、安全專項與題目校驗碼：2／58／10 項分別通過，10 項連網／付費測試依預設略過，校驗碼正確。環境為 macOS arm64／Node 26.12.0；使用既有 Chromium 快取，沒有將此次檢查稱為全新瀏覽器下載或跨平台驗證。
+5. 補上封裝驗證紀錄，檢查本機文件連結與錨點、原始題目及空白格式。既有 JSON、測試程式及執行程式皆未修改；未重跑付費模型或網站擷取，crapper／dryer／mutator 仍不可用。僅回收本次建立且已不使用的驗證暫存目錄，不刪除既有證據或本機憑證。
+6. 此單位提交後以該提交產生帶版本的最終 ZIP 與 SHA-256 校驗檔，放在 Git 忽略的 `artifacts/reviewer/`，再次核對內容與 Git 版本；正常推送公開 `origin/main`，不變更舊私人 remote、不另建 GitHub Release，也不提交 ZIP 或本機備註。

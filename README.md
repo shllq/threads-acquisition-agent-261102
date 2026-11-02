@@ -8,6 +8,8 @@
 
 ## 先看交付成果
 
+**建議從 [審閱與驗證指南](REVIEW.md) 開始**：六個案例檢查表 → 不需金鑰的成果／離線驗證 → 選擇性的付費 CLI 重跑。從 GitHub clone 或交付 ZIP 解壓後皆可使用；附每一步的預期結果與題目需求對照。
+
 不需金鑰即可審閱：[CLI 指令與六個案例](examples/README.md)、[JSON 結果](examples/live-cli/share/result.json)、[同次執行紀錄](examples/live-cli/share/trace.json)。紀錄包含模型／工具呼叫、回傳、Token 用量與結束狀態；工具回傳保留當次擷取證據，不包含模型私有思考內容。
 
 ## 快速開始

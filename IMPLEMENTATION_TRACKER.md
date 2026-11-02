@@ -84,7 +84,7 @@ Local evidence (ignored by Git, not guaranteed to accompany a clone):
 | LLM/model usage | Live `gpt-4.1-mini`: canonical/share all-fields and profile-only runs passed; usage 821/872/120 tokens. |
 | crapper / dryer / mutator | Not run: not installed. |
 | End-to-end assignment acceptance | Three live CLI cases checked; reader-reply, anonymous multipart and structural reader-branch regressions each passed in three model runs. Broader accuracy, exhaustive extraction and publication not established. |
-| Current offline suite | 52 pass, 3 paid live tests skipped by default. Earlier clean temporary dependency installation passed with 49 offline tests. |
+| Current offline suite | 54 pass, 3 paid live tests skipped by default. Includes unavailable-field acquisition reasons and mixed available/unavailable profile data. Earlier clean temporary dependency installation passed with 49 offline tests. |
 
 ## Next steps
 

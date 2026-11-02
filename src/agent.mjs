@@ -87,15 +87,19 @@ export async function runAgent({ message, model, modelName, acquirePost, acquire
     const post = EvidenceSchema.parse(await call('tool_call', 'acquirePost', { url: request.url }, () => acquirePost(request.url)));
     const path = value => new URL(value).pathname.replace(/\/$/, '');
     const root = post.posts.find(candidate => path(candidate.url) === path(post.source_url) && !candidate.is_recommendation);
-    const values = {};
+    const unavailable = observation => ({
+      status: 'unavailable', value: null,
+      reason: redact(observation.limitations.join(' ') || 'The requested value was not found in the acquired evidence.', secrets)
+    });
+    const values = Object.fromEntries(request.fields.map(field => [field, unavailable(post)]));
     if (root) {
       const limitation = post.limitations.join(' ') || 'Rendered content has not been verified as complete.';
       values.post_content = { status: 'partial', value: root.text, reason: limitation };
       if (request.fields.some(field => ['profile_name', 'follower_count'].includes(field))) {
         const profileUrl = new URL(`/@${root.author}`, post.source_url).href;
         const profile = EvidenceSchema.parse(await call('tool_call', 'acquireProfile', { url: profileUrl }, () => acquireProfile(profileUrl)));
-        if (profile.profile?.display_name) values.profile_name = { status: 'ok', value: profile.profile.display_name };
-        if (profile.profile?.follower_count) values.follower_count = { status: 'ok', value: profile.profile.follower_count };
+        values.profile_name = profile.profile?.display_name ? { status: 'ok', value: profile.profile.display_name } : unavailable(profile);
+        values.follower_count = profile.profile?.follower_count ? { status: 'ok', value: profile.profile.follower_count } : unavailable(profile);
       }
       if (request.fields.includes('author_continuations')) {
         const context = post.posts.filter(candidate => !candidate.is_recommendation).sort((a, b) => a.position - b.position);

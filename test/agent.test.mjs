@@ -121,6 +121,48 @@ test('missing target yields unavailable fields without claiming zero model usage
   assert.equal(run.result.usage.status, 'unknown');
 });
 
+test('unavailable target explains the acquisition failure for every requested field', async () => {
+  const fields = ['profile_name', 'follower_count', 'post_content', 'author_continuations'];
+  for (const reason of ['HTTP 403; error-page content was not parsed.', 'The target post could not be identified with an unambiguous text block and permalink.', 'Acquisition failed: navigation timed out for test-secret.']) {
+    const run = await runAgent({ message: `名稱、追蹤者數量、內容及續文 ${url}`, modelName: 'fixture', secrets: ['test-secret'],
+      model: async () => ({ content: JSON.stringify({ fields }), usage }),
+      acquirePost: async () => ({ ...evidence, http_status: 403, posts: [], limitations: [reason] }),
+      acquireProfile: async () => assert.fail('No identified author; must not acquire profile.') });
+    assert.equal(run.error, null);
+    assert.equal(run.result.status, 'unavailable');
+    assert.deepEqual(Object.keys(run.result.data), fields);
+    for (const field of fields) {
+      assert.deepEqual(run.result.data[field], { status: 'unavailable', value: null, reason: redact(reason, ['test-secret']) });
+    }
+    assert.equal(run.trace.events.at(-1).status, 'completed');
+    assert.equal(run.result.usage.total_tokens, 15);
+    assert.ok(!JSON.stringify(run).includes('test-secret'));
+  }
+});
+
+test('missing profile fields retain profile limitations without discarding available data', async () => {
+  const profileUrl = 'https://www.threads.com/@author';
+  const followers = { display: '42', precision: 'exact', count: 42 };
+  for (const { profile, reason } of [
+    { profile: null, reason: 'HTTP 403; error-page content was not parsed.' },
+    { profile: { url: profileUrl, display_name: null, follower_count: followers }, reason: 'Profile display name is missing or ambiguous.' },
+    { profile: { url: profileUrl, display_name: 'Author', follower_count: null }, reason: 'Follower count is missing, ambiguous or in an unsupported format.' }
+  ]) {
+    const run = await runAgent({ message: `名稱、追蹤者數量及內容 ${url}`, modelName: 'fixture',
+      model: async () => ({ content: JSON.stringify({ fields: ['profile_name', 'follower_count', 'post_content'] }), usage }),
+      acquirePost: async () => evidence,
+      acquireProfile: async () => ({ ...evidence, source_url: profileUrl, posts: [], profile, limitations: [reason] }) });
+    assert.equal(run.error, null);
+    assert.equal(run.result.status, 'partial');
+    for (const [field, value] of [['profile_name', profile?.display_name], ['follower_count', profile?.follower_count]]) {
+      assert.deepEqual(run.result.data[field], value ? { status: 'ok', value } : { status: 'unavailable', value: null, reason });
+    }
+    assert.equal(run.result.data.post_content.value, evidence.posts[0].text);
+    assert.equal(run.result.data.post_content.reason, evidence.limitations[0]);
+    assert.equal(run.trace.events.filter(event => event.type === 'model_call').length, 1);
+  }
+});
+
 test('SDK adapter projects public content and usage only, and rejects truncated output', async () => {
   const response = { choices: [{ finish_reason: 'stop', message: { content: '{"fields":["post_content"]}', reasoning: 'private' } }], usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 } };
   const client = { chat: { completions: { create: async request => { assert.equal(request.response_format.type, 'json_object'); return response; } } } };

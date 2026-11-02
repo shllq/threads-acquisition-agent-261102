@@ -87,7 +87,7 @@ Local evidence (ignored by Git, not guaranteed to accompany a clone):
 
 ## Next steps
 
-1. Provision macOS Keychain (or inject `OPENAI_API_KEY` through a credential manager on other platforms) and run the natural-language CLI against canonical/share inputs. Current total: 44 passing tests; live model behavior is not verified.
+1. Set a dedicated restricted/revocable key in local `.env` (or inject `OPENAI_API_KEY` for CI) and run the natural-language CLI against canonical/share inputs. Current total: 46 passing tests; live model behavior is not verified.
 2. Manually evaluate continuation selection against genuine continuations and reader/author exchanges; record classification errors rather than equating fake-provider tests with model accuracy.
 3. Publish sanitized successful result/trace examples. The no-key CLI failure path has been exercised locally; abrupt termination/crash persistence is not implemented.
 4. Extend acquisition/expansion only where justified by real incomplete cases; currently no exhaustive-loading claim is permitted. CLI browser egress is now restricted to DNS-pinned public IPv4 on port 443; it remains application-level protection, not a hosted-service/OS sandbox.

@@ -8,9 +8,9 @@ Requires Node.js 22+ and npm.
 ```sh
 npm ci
 npx playwright install chromium
-# macOS: in Keychain Access, add a generic password:
-# name/service: threads-acquisition-agent; account: openai; password: your API key.
-# Other platforms/CI: inject OPENAI_API_KEY through a trusted credential manager.
+cp .env.example .env
+chmod 600 .env # macOS/Linux: owner read/write only.
+# Edit .env locally and set OPENAI_API_KEY. Do not paste the key into shell commands.
 export OPENAI_MODEL='gpt-4.1-mini' # Optional; this is the default.
 npm run --silent agent -- '請取得這篇 Threads 作者的個人檔案名稱、追蹤者數量、貼文內容及續文：https://www.threads.com/share/GW3EPb5M8/' artifacts/my-run
 ```
@@ -23,12 +23,13 @@ Traces contain public model/tool calls, per-call usage and terminal status, not 
 
 ## Security
 
-- Keys come from macOS Keychain, or a credential-manager-injected `OPENAI_API_KEY` fallback that is removed from Node's environment after loading. Never type real keys into shell commands or commit them.
+- Generate a **dedicated, restricted project API key** with only the permissions this Agent needs. Apply provider-side usage limits/alerts; **revoke it anytime**, especially after testing or suspected exposure.
+- Store it in the local `.env` file (plaintext, Git-ignored); keep owner-only permissions and never commit or share it. An injected `OPENAI_API_KEY` takes precedence and is removed from Node's environment after loading. No Keychain setup is needed.
 - Model requests use a fixed OpenAI HTTPS endpoint, reject redirects and disable SDK debug logging. Chromium receives only selected OS settings, not model credentials.
 - Browser traffic uses a public-IPv4/HTTPS-port-only proxy with checked, pinned destination IPs. Private/loopback/metadata addresses, HTTP and IPv6 are blocked, including redirects/subresources; IPv6-only sites are unsupported.
 - Traces redact configured keys and credential fields, including serialized JSON. Redaction is not a universal secret detector: review artifacts before sharing and use a dedicated, least-privilege provider key.
 
-This remains a trusted local CLI, not an OS-level network sandbox or public service. Real Keychain access and live model authentication still need operator verification. See [security checks](security-checks/README.md).
+This remains a trusted local CLI, not an OS-level network sandbox or public service. Live model authentication still needs operator verification. See [security checks](security-checks/README.md).
 
 ## Project planning
 

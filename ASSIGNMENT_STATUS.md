@@ -42,7 +42,7 @@ Plans, schemas and milestone labels do not amend the assignment. This report is 
 
 ## Verification
 
-- **44 tests pass:** 27 contract/browser tests, 9 Agent/SDK tests and 8 security tests. Includes a complete fake-provider workflow through guarded Chromium, endpoint/credential/redaction checks and private-network denial.
+- **46 tests pass:** 27 contract/browser tests, 9 Agent/SDK tests and 10 security tests. Includes a complete fake-provider workflow through guarded Chromium, endpoint/credential/redaction checks and private-network denial.
 - Test-first Agent run failed on the missing module before implementation.
 - Agent tests cover source-backed selection/order, rejection of invalid IDs, profile-only projection, ambiguous empty continuations, missing evidence/usage, failed-call terminal traces and credential redaction.
 - SDK fake-client test verifies public content/usage projection and truncated-response rejection.
@@ -52,6 +52,6 @@ Plans, schemas and milestone labels do not amend the assignment. This report is 
 
 ## Next
 
-1. Provision macOS Keychain (or a credential-manager-injected `OPENAI_API_KEY` on other platforms); run canonical/share natural-language cases and manually check continuation decisions.
+1. Set a dedicated restricted/revocable key in local `.env` (or inject `OPENAI_API_KEY` for CI); run canonical/share natural-language cases and manually check continuation decisions.
 2. Keep partial/uncertain statuses where evidence is incomplete; fix only demonstrated acquisition/classification gaps.
 3. Save sanitized successful output/trace examples, verify clean setup and publish to the agreed GitHub destination.

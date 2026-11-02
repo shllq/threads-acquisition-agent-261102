@@ -9,6 +9,9 @@ import { createServer as createTcpServer, connect } from 'node:net';
 import { createServer as createHttpServer } from 'node:http';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
+import { mkdtemp, writeFile, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 test('SDK ignores inherited endpoint and debug overrides without changing authentication', async () => {
   const originalFetch = globalThis.fetch;
@@ -34,19 +37,32 @@ test('SDK ignores inherited endpoint and debug overrides without changing authen
   }
 });
 
-test('credential loading consumes the environment fallback and otherwise uses fixed Keychain arguments', async () => {
-  const env = { OPENAI_API_KEY: ' dummy-key ', HOME: '/home/test', OTHER_SECRET: 'hidden' };
-  assert.equal(await loadApiKey({ env }), 'dummy-key');
-  assert.equal(env.OPENAI_API_KEY, undefined);
-  const key = await loadApiKey({ env, platform: 'darwin', execute: async (file, args, options) => {
-    assert.equal(file, '/usr/bin/security');
-    assert.deepEqual(args, ['find-generic-password', '-s', 'threads-acquisition-agent', '-a', 'openai', '-w']);
-    assert.equal(options.env.OTHER_SECRET, undefined);
-    return { stdout: 'keychain-dummy\n' };
-  } });
-  assert.equal(key, 'keychain-dummy');
-  await assert.rejects(loadApiKey({ env: {}, platform: 'linux' }), /OPENAI_API_KEY/);
-  await assert.rejects(loadApiKey({ env: {}, platform: 'darwin', execute: async () => { throw new Error('private stderr'); } }), error => !error.message.includes('private stderr'));
+test('local .env loads a quoted key without exporting credentials or other settings', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'threads-env-'));
+  const file = join(directory, '.env');
+  const env = {};
+  try {
+    await writeFile(file, '# local credential\nOPENAI_API_KEY="dummy-file-key"\nOPENAI_BASE_URL=http://untrusted.invalid\n');
+    assert.equal(await loadApiKey({ env, file }), 'dummy-file-key');
+    assert.deepEqual(env, {});
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
+test('an injected environment key takes precedence and is removed after loading', async () => {
+  const env = { OPENAI_API_KEY: ' dummy-key ' };
+  assert.equal(await loadApiKey({ env, file: '/unused/.env' }), 'dummy-key');
+  assert.deepEqual(env, {});
+});
+
+test('missing and empty .env credentials give a setup error without leaking file contents', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'threads-env-'));
+  const file = join(directory, '.env');
+  try {
+    await assert.rejects(loadApiKey({ env: {}, file }), /\.env.*OPENAI_API_KEY/);
+    await writeFile(file, 'OPENAI_API_KEY=""\nOTHER_SECRET=do-not-log-this\n');
+    await assert.rejects(loadApiKey({ env: {}, file }), error => /OPENAI_API_KEY/.test(error.message) && !error.message.includes('do-not-log-this'));
+    await assert.rejects(loadApiKey({ env: {}, file: directory }), /Cannot read/);
+  } finally { await rm(directory, { recursive: true, force: true }); }
 });
 
 test('browser environment allows OS settings but no credentials or runtime injection', () => {

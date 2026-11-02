@@ -1,5 +1,9 @@
 # Initial implementation plan
 
+## Authoritative reference
+
+The verbatim [original assignment](init_assignment.md) is the invariant acceptance baseline; do not edit it to match the plan. Its digest is recorded in `init_assignment.sha256`. The assignment takes precedence over this design. See [ASSIGNMENT_STATUS.md](ASSIGNMENT_STATUS.md) for the current conformance snapshot.
+
 ## Goal and timebox
 
 Build a CLI Agent that accepts a natural-language message containing one Threads URL and requested fields, acquires publicly accessible evidence using an isolated browser, and outputs JSON. Aim for roughly four hours to one day; favor a small complete workflow over a generic scraping platform.

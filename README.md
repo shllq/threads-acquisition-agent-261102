@@ -5,6 +5,8 @@ Requires Node.js 22+ and npm.
 
 ## Project planning
 
+- [Original assignment](init_assignment.md): invariant acceptance reference; preserve verbatim. Verify with `shasum -a 256 -c init_assignment.sha256`.
+- [Assignment comparison](ASSIGNMENT_STATUS.md): requirement-by-requirement evidence and gaps.
 - [Initial plan](PLAN.md): requirements, architecture, milestones, validation and scope.
 - [Implementation tracker](IMPLEMENTATION_TRACKER.md): completed work, evidence, gaps and next steps.
 - [Work log](WORK_LOG.md): actions, rationale and verification history.

@@ -40,3 +40,11 @@ Remaining: structural browser extraction, share-resolution live checks, natural-
 2. Reviewed ignored paths and project-local Pi configuration. Included the Ponytail package declaration and ub-mode skill; excluded downloaded Pi packages, dependencies and captured browser artifacts.
 3. Re-ran `npm test`: all 15 tests passed. Re-ran `npm audit --omit=dev`: zero vulnerabilities. Scanned intended commit files for common private-key and API-token patterns: no matches; this scan is not a comprehensive secret audit.
 4. Updated tracker repository state and prepared an explicit file list for the initial commit. Checked the staged diff for whitespace issues before committing. No push requested or performed; no remote is configured.
+
+## Invariant assignment and comparison checkpoint
+
+1. Found the user-provided, untracked `init_assignment.md` and read it completely. Preserved its bytes verbatim rather than adding annotations to the assignment.
+2. Saved its SHA-256 in `init_assignment.sha256` so future changes can be detected. This is a review invariant, not filesystem write protection.
+3. Compared the actual probe/contracts, tracker and README against the original core workflow, seven feature requirements, two implementation requirements and four deliverables. Saved evidence, gaps and next priorities in `ASSIGNMENT_STATUS.md`.
+4. Linked the invariant and comparison from README, PLAN and tracker. Explicitly distinguished contract tests from implemented acquisition/Agent behavior and optional process tools from assignment requirements.
+5. Re-ran `npm test`: all 15 tests passed. No live platform retest was performed. Verified the assignment digest and local documentation links; no application code changed at this checkpoint.

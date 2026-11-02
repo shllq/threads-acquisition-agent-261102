@@ -102,3 +102,17 @@ Remaining: structural browser extraction, share-resolution live checks, natural-
 3. Removed platform-specific credential retrieval. Used Node's built-in `parseEnv` to read only `OPENAI_API_KEY` from local `.env` into memory; kept environment precedence/consumption for CI and sanitized missing/empty/unreadable-file errors. No dependency or application/browser security behavior was added or removed otherwise.
 4. Added an empty `.env.example`, ignored `.env` variants while keeping the example trackable, and documented owner-only file permissions plus dedicated, restricted project keys that can be revoked anytime. Updated current setup/status docs; historical Keychain entries remain historical. Did not create, read or modify the user's actual `.env`.
 5. Verified 46 passing tests, zero dependency-audit vulnerabilities, unchanged assignment checksum, whitespace and ignore rules. No live model authentication was attempted; plaintext local storage is an explicitly accepted trade-off. No cleanup needed; crapper/dryer/mutator remain unavailable. Commit this change separately; no push without a configured remote.
+
+## Make shortcuts for timestamped runs
+
+1. Inspected the package scripts, CLI arguments, clean Git state and local GNU Make 3.81. Used the invoked command (`agent`, `acquire`, `probe`) as the artifact stage; retained the npm interface for custom messages.
+2. Added Make shortcut tests first and confirmed both failed because Makefile did not exist. Stubbed npm/date in temporary directories so workflow checks do not call a provider, read real credentials or depend on wall-clock time.
+3. Added `make agent <URL>` with all four assignment fields, equivalent acquire/probe shortcuts, and `make test`. Passed URL data through an exported variable rather than interpolating it into shell commands. Added `URL='...'` syntax for query strings containing `=`, which make otherwise treats as assignments.
+4. Created local-time `artifacts/<command>-YYYY-MM-DD-HH-MM-SS/` directories exclusively before invoking the existing CLI. A same-command/same-second collision fails instead of sharing or overwriting state. Tests cover dispatch, URL forwarding, timestamps, collision refusal and missing/multiple URLs.
+5. Updated README and current test totals. Verified `make test`: all 48 tests passed; assignment checksum and whitespace checks passed. No live model/browser acquisition was needed for the Make wrapper, and no dependency was added. crapper/dryer/mutator remain unavailable. No cleanup needed; push remains blocked by the absent remote.
+
+## Compact artifact timestamps
+
+1. Checked the clean worktree and all current timestamp references. Updated Make tests first to require both the compact date-format argument and `artifacts/<stage>-YYYYMMDD-HHMMSS/`; confirmed they failed against the old format.
+2. Changed the shared Make timestamp format and README example. Kept local time, command-based stages and collision refusal unchanged; existing artifacts were not renamed or deleted.
+3. Ran `make test`: all 48 tests passed; whitespace check passed. No live model calls or new dependencies were needed. Per the user's standing preference, commit verified changes before handing them back for review. No push without a remote.

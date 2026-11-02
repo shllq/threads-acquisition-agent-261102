@@ -15,7 +15,20 @@ export OPENAI_MODEL='gpt-4.1-mini' # Optional; this is the default.
 npm run --silent agent -- '請取得這篇 Threads 作者的個人檔案名稱、追蹤者數量、貼文內容及續文：https://www.threads.com/share/GW3EPb5M8/' artifacts/my-run
 ```
 
-Quote the entire message as one argument; the optional second argument is the output directory. stdout contains result JSON; `result.json` and `trace.json` are written there. Failures save an error object and terminal trace and exit nonzero; wholly unavailable data also exits nonzero. Partial/uncertain results exit zero and must be interpreted by their field statuses. Missing credentials fail before browsing.
+### Make shortcuts
+
+With `.env` configured, run from the repository root:
+
+```sh
+make agent https://www.threads.com/@faustforgame/post/DfN8AZNkm-I
+make acquire https://www.threads.com/@faustforgame/post/DfN8AZNkm-I
+make probe https://www.threads.com/@faustforgame/post/DfN8AZNkm-I
+make test
+```
+
+`make agent` requests all four assignment fields. Each run creates `artifacts/<stage>-YYYYMMDD-HHMMSS/` using the command as the stage and local time, for example `artifacts/agent-20261102-143045/`. Existing directories are never reused: a same-command collision within one second fails rather than overwriting a run. For URLs containing `=`, use `make agent URL='https://www.threads.com/share/EXAMPLE/?x=1'` because make treats arguments containing `=` as variable assignments. Use the npm command above for custom field-selection messages.
+
+For the npm command, quote the entire message as one argument; the optional second argument is the output directory. stdout contains result JSON; `result.json` and `trace.json` are written there. Failures save an error object and terminal trace and exit nonzero; wholly unavailable data also exits nonzero. Partial/uncertain results exit zero and must be interpreted by their field statuses. Missing credentials fail before browsing.
 
 The official OpenAI SDK makes at most two calls: requested-field selection and, only when requested and a target exists, contextual continuation selection. Calls have a 30-second SDK timeout, no automatic retries and a 2,000-output-token cap. Browser acquisition is bounded independently. Only the author's requested profile fields trigger profile acquisition. Model selections must reference eligible same-author evidence IDs; output text comes directly from evidence in observed order, never model-written text. Contextual classification can still be wrong: no live model evaluation has been performed. Post text is conservatively partial (no expansion proof); continuations are partial or uncertain, never claimed exhaustive.
 

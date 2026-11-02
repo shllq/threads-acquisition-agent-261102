@@ -42,7 +42,7 @@ Plans, schemas and milestone labels do not amend the assignment. This report is 
 
 ## Verification
 
-- **46 tests pass:** 27 contract/browser tests, 9 Agent/SDK tests and 10 security tests. Includes a complete fake-provider workflow through guarded Chromium, endpoint/credential/redaction checks and private-network denial.
+- **48 tests pass:** 27 contract/browser tests, 9 Agent/SDK tests, 10 security tests and 2 Make shortcut tests. Includes a complete fake-provider workflow through guarded Chromium, endpoint/credential/redaction checks and private-network denial.
 - Test-first Agent run failed on the missing module before implementation.
 - Agent tests cover source-backed selection/order, rejection of invalid IDs, profile-only projection, ambiguous empty continuations, missing evidence/usage, failed-call terminal traces and credential redaction.
 - SDK fake-client test verifies public content/usage projection and truncated-response rejection.

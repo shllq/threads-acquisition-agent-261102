@@ -52,7 +52,7 @@ npm run --silent agent -- '請取得這篇 Threads 作者的個人檔案名稱�
 3. 以確定性規則排除讀者回覆分支，以及已記錄但缺失或無效的父節點；其餘候選續文再依對話脈絡交由模型判斷。
 4. 依來源證據 ID 組合 JSON，保留原文及觀察到的順序，並儲存去除敏感資訊的執行紀錄。
 
-每次任務最多兩次模型呼叫，設有逾時且不自動重試。瀏覽器不繼承模型金鑰，對外連線限公開 HTTPS。此工具是本機 CLI，不是作業系統層級的沙箱；詳見[安全說明](security-checks/README.md)。
+每次任務最多兩次模型呼叫，設有逾時且不自動重試。瀏覽器不繼承模型金鑰，對外連線限公開 HTTPS。此工具是本機 CLI，不是作業系統層級的沙箱；詳見[安全說明](docs/SECURITY.md)。
 
 ## 驗證與已知限制
 
@@ -66,10 +66,23 @@ RUN_LIVE_MODEL=1 node --test test/live-continuations.test.mjs # 自行選擇執�
 - 公開頁面可能受限、文字遭截斷或缺少文字區塊。不繞過登入限制，不額外捲動或展開內容；貼文與續文維持部分取得或無法確認的狀態，不宣稱完整擷取。
 - DOM 垂直連線的辨識依賴頁面結構；未知關係仍需模型判讀，可能誤判。不依賴登入後才出現的續文序號。概略顯示的追蹤者數量不會當成精確數字。
 
-實際成功案例、失敗發現與回歸驗證，請見[範例與觀察紀錄](examples/README.md)。
+CLI 與 JSON 交付範例請見 [examples/](examples/README.md)；成功案例、失敗發現與回歸驗證請見[擷取發現](docs/FINDINGS.md)。
+
+## 專案結構
+
+```text
+src/                 核心流程、擷取、資料驗證、模型與安全控制
+scripts/             Agent CLI，以及 acquire／probe 診斷工具
+test/                離線與付費模型測試，fixtures/ 為測試資料
+examples/            可執行範例、結果 JSON、執行紀錄與共用擷取證據
+docs/                需求對照、資料契約、安全說明與擷取發現
+  assets/            發現紀錄引用的截圖
+  development/       初始計畫、歷史進度與工作紀錄
+init_assignment.md   原始題目，保留不變
+```
 
 ## AI 使用與參考資料
 
 開發過程使用 AI 協助實作、測試、文件撰寫與實際結果分析。確定性測試驗證程式流程；模型測試僅涵蓋特定案例，不代表整體準確率保證。
 
-[原始題目](init_assignment.md) · [需求對照](ASSIGNMENT_STATUS.md) · [資料契約](CONTRACTS.md) · [工作紀錄](WORK_LOG.md)
+[原始題目](init_assignment.md) · [需求對照](docs/ASSIGNMENT_STATUS.md) · [資料契約](docs/CONTRACTS.md) · [工作紀錄](docs/development/WORK_LOG.md)

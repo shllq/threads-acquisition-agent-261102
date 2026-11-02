@@ -1,6 +1,6 @@
 # Data contracts
 
-Runtime source of truth: [`src/contracts.mjs`](src/contracts.mjs), using Zod. These define contracts and pure result assembly. `src/acquisition.mjs` now produces validated browser evidence; `src/agent.mjs` now orchestrates model field selection, acquisition and contextual continuation selection; `src/model.mjs` projects public OpenAI SDK responses. Live canonical/share/multipart workflows and three recorded-case model regressions have been checked; broad model accuracy remains unverified.
+Runtime source of truth: [`src/contracts.mjs`](../src/contracts.mjs), using Zod. These define contracts and pure result assembly. `src/acquisition.mjs` now produces validated browser evidence; `src/agent.mjs` now orchestrates model field selection, acquisition and contextual continuation selection; `src/model.mjs` projects public OpenAI SDK responses. Live canonical/share/multipart workflows and three recorded-case model regressions have been checked; broad model accuracy remains unverified.
 
 ## Request
 

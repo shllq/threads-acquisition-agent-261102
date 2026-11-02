@@ -1,5 +1,7 @@
 # Work log
 
+Historical entries retain the file names, root-relative commands and repository state from when each action occurred. The documentation was later reorganized under `docs/`; use [assignment status](../ASSIGNMENT_STATUS.md) for current acceptance and the [reviewer README](../../README.md) for navigation. Historical references: [initial plan](PLAN.md) and [milestone tracker](IMPLEMENTATION_TRACKER.md).
+
 ## Playwright feasibility milestone
 
 1. Inspected the project and runtimes: only Pi configuration existed, with no Git repository. Added a minimal Node ESM package rather than an Agent framework.
@@ -209,3 +211,12 @@ Remaining: structural browser extraction, share-resolution live checks, natural-
 1. 依使用者要求，將精簡版 `README.md` 改為臺灣繁體中文，保留原有結構、CLI 指令、JSON 欄位名稱、連結、驗證範圍與已知限制；未修改程式行為或原始題目。
 2. 確認工作目錄僅有原本未追蹤的 `notes.md`，並保留不動。檢查 README 本機連結、範例 JSON、題目校驗碼與空白格式；文件翻譯不另加形式化測試，也不重跑應用程式或付費模型測試。
 3. 無需刪除現有檔案或證據；此變更僅提交 README 與工作紀錄，正常推送至既有 `origin/main`，不調整儲存庫權限。
+
+## 文件與審閱路徑整理
+
+1. 依前次審閱方案檢查所有追蹤檔案、Markdown 引用與測試讀檔路徑。確認 `main` 已追蹤 `origin/main`，唯一原有未追蹤檔案為 `notes.md`，保留不動。先以目標路徑的斷言檢查確認整理尚未完成，失敗原因為 `docs/ASSIGNMENT_STATUS.md` 尚不存在。
+2. 將目前需求對照、資料契約與安全說明移至 `docs/`；初始計畫、里程碑追蹤與工作紀錄移至 `docs/development/`。標明歷史文件的性質，以需求對照作為目前驗證狀態的單一入口；原先「目前共 27 項」改為 M3 當時的測試快照，保留歷史事實，不與目前 54 項離線測試混淆。
+3. 將範例文件的完整擷取發現移至 `docs/FINDINGS.md`，`examples/README.md` 精簡為繁體中文指令及 JSON 交付說明。三張公開截圖移至 `docs/assets/` 並改為可攜檔名，移除原檔名中的冒號；逐一比對圖片原始位元組，確認未變更內容。舊的空目錄 `security-checks/` 已移除，沒有刪除證據。
+4. 更新 README 結構導覽、移動文件的相對連結、測試資料來源說明及安全文件的歷史驗證範圍。保留歷史工作紀錄中的當時檔名與指令，於開頭說明其時間脈絡並連結目前入口。程式、CLI、Makefile、相依套件、所有測試程式及 HTML/JSON 測試資料、JSON 交付範例與原始題目皆維持原路徑和原始內容。
+5. 搬移後離線測試 54 項通過，3 項付費模型測試依預設略過。目標／舊路徑斷言、截圖位元組比對、Windows 保留字元檔名檢查、本機連結與章節錨點檢查、題目校驗碼及空白格式檢查皆通過；未新增無法驗證行為的形式化測試。此次只調整文件配置，不重跑付費模型或下載瀏覽器；未實際在 Windows 上執行。
+6. 保留 `.pi/`、`.env`、依賴目錄、本機 artifacts／screenshots 與 `notes.md`。未發現需安全回收的其他檔案；crapper／dryer／mutator 不可用，且此次未修改程式邏輯。將此整理作為一個完整提交，正常推送既有 `origin/main`，不變更可見度或審閱者權限。

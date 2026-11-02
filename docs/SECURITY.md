@@ -1,6 +1,6 @@
 # Security checks
 
-Scope: trusted, single-user local CLI. Use dummy credentials for checks; never commit raw environment dumps, private sessions or real keys. This is not an OS-level sandbox or a hosted browsing service.
+Scope: trusted, single-user local CLI. Commands and code paths are relative to the repository root. Use dummy credentials for checks; never commit raw environment dumps, private sessions or real keys. This is not an OS-level sandbox or a hosted browsing service.
 
 ## Implemented controls
 
@@ -31,7 +31,7 @@ For CI, an injected `OPENAI_API_KEY` takes precedence over `.env` and is removed
 
 ## Remaining operator checks and limits
 
-- [ ] Verify live OpenAI authentication, provider permissions and usage controls with a dedicated project key. No real model credentials were used for this checkpoint.
+- [ ] Verify provider permissions and usage controls for your own dedicated project key. Live authentication was exercised locally after the original security checkpoint; it does not verify another operator's setup.
 - [ ] Review actual result/trace artifacts before publishing. Arbitrary unlabelled or encoded secrets are not universally detectable; source text is not rewritten by trace sanitization.
 - IPv6-only destinations and plain HTTP resources are intentionally unavailable. Chromium uses the proxy for normal network traffic, with direct DNS/QUIC/non-proxied WebRTC UDP disabled. This is application-level egress restriction, not containment of a compromised native process.
 - Keys exist in plaintext in `.env` and in authorized Node memory. File permissions do not protect against malicious code/dependencies running as the same user. There is no private login import, public multi-user service, crash-recoverable trace or comprehensive secret scanner.

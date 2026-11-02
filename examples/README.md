@@ -1,83 +1,19 @@
-# Live CLI example and acceptance checks
+# CLI 與 JSON 範例
 
-Captured on 2026-11-02 with `gpt-4.1-mini`, fresh anonymous Chromium and the guarded browser launcher. These are observed public snapshots, not guaranteed current values or complete conversations.
+從專案根目錄執行；需先完成 [README 的環境設定](../README.md#快速開始)。
 
 ```sh
 npm run --silent agent -- '請取得這篇 Threads 作者的個人檔案名稱、追蹤者數量、貼文內容及續文：https://www.threads.com/share/GW3EPb5M8/' artifacts/my-share-run
 ```
 
-- [Result JSON](share/result.json): all four requested fields, Whoscall, 15,108 followers, original post and one continuation; `partial`, 872 tokens.
-- [Execution trace JSON](share/trace.json): two model calls, post/profile tool calls with evidence, and completed terminal state. No private model reasoning.
-- Sanitization: the CLI redactor was applied again and the resolved URL's `xmt` tracking query was removed. Public evidence text, timestamps, usage and model decisions are unchanged. No keys, cookies or login state are included.
-
-## Checks performed
-
-| Case | Observed result |
+| 檔案 | 用途 |
 |---|---|
-| Share URL, all fields | Selected `Dd0_RHRH6h9`; excluded reader reply `Dd8sq8MH9pJ`; partial, 872 tokens. |
-| Canonical `https://www.threads.com/@whoscall_tw/post/De6Yqf8nxuz`, all fields | Selected `De6YqepH6ke`; source text/order preserved; partial, 821 tokens. |
-| Same canonical URL, profile name only | Only `profile_name` returned (`Whoscall`); no continuation model call; complete for that requested field, 120 tokens. |
-| Recorded share conversation, three independent model runs | All selected only `Dd0_RHRH6h9`, excluding the reader-response apology. |
-| Recorded anonymous `@wheretogo_blue` conversation, three independent model runs | All selected `DfN7KYxkgGn`, `DfN7KarksFD`, `DfN7KalkgFv` in order, preserving source text and partial status without sequence badges. |
-| Recorded `@tai_wan_lan` connector evidence, three independent model runs | Selected only `DU0gvTyk830`, `DU0iKvbE2Zj`; reader branches and a recorded missing parent were ineligible. |
-| Fresh live CLI after connector extraction | `@tai_wan_lan` retained two continuations (1,891 tokens); `@wheretogo_blue` retained three (2,460 tokens); share URL retained one (921 tokens). All results partial. |
+| [share/result.json](share/result.json) | 實際模型與瀏覽器執行結果，包含四個指定欄位、來源、時間、狀態與 Token 用量。 |
+| [share/trace.json](share/trace.json) | 同次任務的兩次模型呼叫、貼文／個人檔案工具呼叫與完成狀態，不含模型私有思考內容。 |
+| [multipart/evidence.json](multipart/evidence.json) | 匿名擷取的四則貼文證據，供多段續文回歸測試共用；不是 Agent 結果或完整性保證。 |
 
-Manual comparison against the acquired conversation confirms the share author apology follows and answers the reader's question, while the activity-details link adds to the original announcement. The canonical continuation expands the root's phone-number explanation. Text was compared to tool evidence, not independently verified as untruncated by the website.
+`share/` 範例於 2026-11-02 使用 `gpt-4.1-mini` 擷取，結果為 `partial`，共 872 Tokens。包含 Whoscall、當時觀察到的 15,108 位追蹤者、原始貼文與一則續文；不代表目前數值或完整續文。
 
-The old prompt failed this same recorded case before the change: it selected the apology as a continuation based on authorship/topic. The revised prompt explicitly checks reader context and omits ambiguous candidates. Three passes per conversation on these three recorded cases are regression checks, not a classification-accuracy benchmark. The share link remains visibly truncated (`…`); no expansion or exhaustive-loading claim is made.
+分享前已再次套用敏感資訊遮蔽，並移除解析後網址的 `xmt` 追蹤參數。公開原文、時間、用量與模型判斷未修改。新的執行結果會寫入指定目錄，stdout 同時輸出結果 JSON。
 
-Raw local runs are ignored under `artifacts/acceptance-{share-fixed,canonical-fixed,profile-only}/`; they are not required to use this committed example.
-
-Rerun the paid, opt-in regression with local `.env` configured:
-
-```sh
-RUN_LIVE_MODEL=1 node --test test/live-continuations.test.mjs
-```
-
-This makes up to eighteen model calls (three full two-call workflows per case) against three recorded conversations, does not browse, and saves result/trace files under a fresh `artifacts/eval-continuations-*` directory per case. Each case stops on its first failed assertion. Ordinary `npm test` skips it and requires no API key.
-
-## Multipart badge investigation: `@wheretogo_blue`
-
-Inspected `https://www.threads.com/@wheretogo_blue/post/DfN7KeGkuzN` anonymously on 2026-11-02. The user supplied a [logged-in screenshot](continuation_1_4_@wheretogo_blue:post:DfN7KeGkuzN.jpg) showing a `1/4` badge, then a [logged-out screenshot](continuation_without_login.jpg) showing the same original post without the badge and its next author post directly below. Per the user's session comparison, badge visibility is login-dependent for this example; this does not establish behavior for every Threads post. The logged-out screenshot matches our anonymous acquisition, where the badge was **not exposed in the inspected browser views**:
-
-- English desktop post: HTTP 200; no numeric fraction in visible or hidden DOM text.
-- Traditional Chinese mobile post: no numeric fraction, including nested text or CSS-generated content in post containers; timestamp permalinks for all four observed posts were present.
-- Traditional Chinese desktop profile: root and same-author candidates were rendered, but no numeric-fraction badge was found in leaf text.
-
-The existing `acquirePost` tool returned [this evidence JSON](multipart/evidence.json), without any model calls:
-
-| Observed position (not a platform sequence number) | Post ID |
-|---|---|
-| 0, target | `DfN7KeGkuzN` |
-| 1 | `DfN7KYxkgGn` |
-| 2 | `DfN7KarksFD` |
-| 3 | `DfN7KalkgFv` |
-
-The three later posts carry author markers and continue the original content when read manually. This initial snapshot did not capture parent edges or the screenshot's `1/4` cue. The subsequent connector investigation below added recognized within-group edges to acquisition, but still does not establish a platform-declared four-part total, complete ancestry or exhaustive coverage. The original committed snapshot is retained unchanged for reproducible recorded-evidence evaluation.
-
-The logged-out screenshot also shows a vertical connector beside the next author post; the later investigation below identified its within-group DOM structure, without establishing platform sequence totals. The anonymous workflow must not depend on logged-in badges. Capture explicit public relationships in the tool only when verified, and retain contextual model classification where they remain unknown. Do not manufacture `1/4` from author matching or use private login state to reproduce the screenshot.
-
-Regression: `test/live-continuations.test.mjs` reuses the committed evidence above (no duplicate snapshot). Manually labeled expected continuations are `DfN7KYxkgGn`, `DfN7KarksFD`, `DfN7KalkgFv`; all three model runs passed. Assertions check the exact IDs/order, original and continuation text, and partial continuation status, without assuming numbered badges or complete coverage. This regression uses recorded anonymous evidence, not the screenshots or a fresh website acquisition.
-
-Local investigation artifacts (DOM observations and screenshot) are under ignored `artifacts/sequence-discovery/`. The committed evidence contains only the public acquisition result, not full HTML, cookies or private session data.
-
-## Vertical connectors and reader branches: `@tai_wan_lan`
-
-The [supplied screenshot](continuation_vertical_bar.jpg) shows the author's database link connected to the author's search tips, and a separate reader-to-author branch. Anonymous inspection of `https://www.threads.com/@tai_wan_lan/post/DU0gmxnk-dT` confirmed the layout:
-
-- Each rendered branch is grouped under `[data-virtualized]`.
-- The earlier post contains an empty, visible 2px-wide vertical bar outside its text, with `--x-borderBottomLeftRadius: 2px` and `--x-borderBottomRightRadius: 2px`. Within that same group, it connects to the next container.
-- Distinct groups are not joined merely because they are adjacent or have the same author. The original post is displayed separately; the first post of a group keeps an unknown parent.
-
-Acquisition now records these observed edges as `parent_id`. It finds the previous container's timestamp permalink even if that parent's text was skipped. The Agent follows recorded ancestry: crossing a reader makes the entire author-reply tail ineligible; a recorded missing, cyclic or nonpreceding parent is also ineligible. The model receives the eligible ID list and cannot return an excluded ID without failing validation. Unknown ancestry still uses contextual classification—an author-only fragment is not asserted to connect all the way to the original.
-
-The initial live run returned five continuations, incorrectly including reader responses. After adding connector evidence and deterministic eligibility, a fresh live run returned only:
-
-1. `DU0gvTyk830` — database link, parent unknown.
-2. `DU0iKvbE2Zj` — search tips, observed parent `DU0gvTyk830`.
-
-Excluded structural branches include `DU0r6MYk5vy` → reader `DU0orKZCRKA`, `DU0uDbjk2vq` → reader `DU0tdyRgYDi`, and `DU1tNrtEyXq` → missing-text parent `DU1XjjbE57I`. The latter is withheld because its parent was not extracted, not because missing text was fabricated.
-
-[Recorded post evidence and manual expected IDs](../test/fixtures/continuation-reader-branches.json) feed the third paid regression case; all three runs passed. Offline browser fixtures cover group separation, hidden/transparent/absent bars, text decorations, skipped parents and author-only tails after a reader. A fake model trying to select forbidden branches fails deterministically.
-
-Limitations: this is a matcher for observed DOM/style structure, not a public platform relationship API. A changed layout may leave edges unknown; unrecognized layouts still depend on model context. Seven text blocks remain skipped on this post, and all results remain partial. No login, extra loading or access-limit bypass was added. Local discovery and corrected CLI artifacts are under ignored `artifacts/connector-discovery/` and `artifacts/agent-20261102-134115/`.
+瀏覽器結構、登入前後差異、錯誤案例與回歸驗證，請見[擷取發現與驗證紀錄](../docs/FINDINGS.md)。各項需求的目前狀態請見[需求對照](../docs/ASSIGNMENT_STATUS.md)。

@@ -1,5 +1,7 @@
 # Browser fixtures
 
+See [acquisition findings](../../docs/FINDINGS.md) for the screenshots, observed DOM structure and known limits behind these fixtures.
+
 The HTML files are synthetic, minimal fixtures based on structural observations from public Threads pages. They are not full saved pages and do not contain captured cookies, headers, tracking URLs or private account state.
 
 - `conversation.html`: timestamp permalinks, pressable containers, language-tagged text, author markers, reader conversation and a separately labeled recommendation section. A same-author recommendation deliberately tests that author matching is insufficient. Reader comments and author-reader replies are retained as evidence context, not classified as continuations.

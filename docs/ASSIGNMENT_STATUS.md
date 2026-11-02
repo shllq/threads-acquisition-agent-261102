@@ -2,7 +2,7 @@
 
 ## Invariant reference
 
-[`init_assignment.md`](init_assignment.md) is the verbatim authoritative acceptance reference. Its bytes remain unchanged; verify with:
+[`init_assignment.md`](../init_assignment.md) is the verbatim authoritative acceptance reference. Its bytes remain unchanged; verify with:
 
 ```sh
 shasum -a 256 -c init_assignment.sha256
@@ -49,7 +49,7 @@ Plans, schemas and milestone labels do not amend the assignment. This report is 
 - CLI without credentials exited nonzero and persisted a failed model event plus terminal state in `artifacts/m4-no-key/` (ignored).
 - Prior canonical/share browser acquisitions succeeded live; the recommendation flag was additionally verified on the real canonical page before M4.
 - Fresh live canonical/share all-fields runs completed with partial results (821/872 tokens); profile-name-only returned exactly that field (120 tokens).
-- The old classifier selected a reader reply on the recorded share case. The revised prompt passed three independent model runs and fresh live share acquisition; see `examples/README.md` for scope and evidence.
+- The old classifier selected a reader reply on the recorded share case. The revised prompt passed three independent model runs and fresh live share acquisition; see [findings](FINDINGS.md) for scope and evidence.
 - The anonymous `@wheretogo_blue` multipart regression retained all three manually labeled continuations in order in three model runs, preserving source text and partial status without sequence badges. The user's logged-in/logged-out screenshots explain the badge difference for this example; no private login state is used.
 - Fresh-install follow-up: a temporary checkout with empty npm and Playwright caches passed `npm ci` (zero audit vulnerabilities), `npx playwright install chromium` (Chromium v1248) and 54 offline tests, with 3 paid regressions skipped. Canonical/share CLI checks from that install returned HTTP 200 for posts/profiles, expected continuations, preserved source text and partial results (875/927 tokens). Tested on macOS arm64 / Node 26.12.0, not another machine/OS or Node 22.
 - Connector-first follow-up: fresh tai_wan_lan, multipart and share runs returned two/three/one expected continuations (1,891/2,460/921 tokens). All three recorded cases passed three model runs each. Seven ambiguous/missing text blocks remain on tai_wan_lan; incomplete ancestry is not filled in.

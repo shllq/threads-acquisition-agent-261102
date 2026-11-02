@@ -1,8 +1,10 @@
-# Initial implementation plan
+# Initial implementation plan (historical)
+
+Archived design, not a description of every shipped capability. Use [assignment status](../ASSIGNMENT_STATUS.md) for current requirements and verification. Commands and code paths are relative to the repository root.
 
 ## Authoritative reference
 
-The verbatim [original assignment](init_assignment.md) is the invariant acceptance baseline; do not edit it to match the plan. Its digest is recorded in `init_assignment.sha256`. The assignment takes precedence over this design. See [ASSIGNMENT_STATUS.md](ASSIGNMENT_STATUS.md) for the current conformance snapshot.
+The verbatim [original assignment](../../init_assignment.md) is the invariant acceptance baseline; do not edit it to match the plan. Its digest is recorded in `init_assignment.sha256`. The assignment takes precedence over this design. See [ASSIGNMENT_STATUS.md](../ASSIGNMENT_STATUS.md) for the current conformance snapshot.
 
 ## Goal and timebox
 

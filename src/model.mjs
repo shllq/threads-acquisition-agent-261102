@@ -1,8 +1,14 @@
 import OpenAI from 'openai';
 
-export function createModel({ apiKey, model = 'gpt-4.1-mini', client } = {}) {
+export function createModel({ apiKey, getApiKey, model = 'gpt-4.1-mini', client } = {}) {
+  let sdk = client;
   return async request => {
-    const sdk = client ?? new OpenAI({ apiKey, timeout: 30_000, maxRetries: 0 });
+    if (!sdk) {
+      const key = apiKey ?? await getApiKey?.();
+      if (!key?.trim()) throw new Error('An OpenAI API key is required.');
+      sdk = new OpenAI({ apiKey: key, baseURL: 'https://api.openai.com/v1', timeout: 30_000, maxRetries: 0,
+        logLevel: 'off', fetchOptions: { redirect: 'error' } });
+    }
     const response = await sdk.chat.completions.create({
       model, ...request, response_format: { type: 'json_object' }, max_completion_tokens: 2000
     });

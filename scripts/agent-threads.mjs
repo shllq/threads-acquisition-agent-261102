@@ -1,6 +1,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { chromium } from 'playwright';
+import { launchBrowser } from '../src/browser.mjs';
+import { loadApiKey } from '../src/credentials.mjs';
 import { runAgent } from '../src/agent.mjs';
 import { createModel } from '../src/model.mjs';
 import { acquirePost, acquireProfile } from '../src/acquisition.mjs';
@@ -10,7 +11,7 @@ let browser;
 let page;
 async function browserPage() {
   if (!page) {
-    browser = await chromium.launch();
+    browser = await launchBrowser();
     const context = await browser.newContext({ locale: 'en-US', serviceWorkers: 'block' });
     page = await context.newPage();
   }
@@ -19,10 +20,15 @@ async function browserPage() {
 try {
   await mkdir(output, { recursive: true });
   const modelName = process.env.OPENAI_MODEL ?? 'gpt-4.1-mini';
+  const secrets = [];
   const run = await runAgent({
     message: process.argv[2], modelName,
-    model: createModel({ apiKey: process.env.OPENAI_API_KEY, model: modelName }),
-    secrets: [process.env.OPENAI_API_KEY],
+    model: createModel({ model: modelName, getApiKey: async () => {
+      const key = await loadApiKey();
+      secrets.push(key);
+      return key;
+    } }),
+    secrets,
     acquirePost: async url => acquirePost(await browserPage(), url),
     acquireProfile: async url => acquireProfile(await browserPage(), url)
   });

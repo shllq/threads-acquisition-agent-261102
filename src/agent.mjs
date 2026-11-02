@@ -13,12 +13,16 @@ export function redact(value, secrets = []) {
   if (typeof value === 'string') {
     let text = value;
     for (const secret of secrets.filter(Boolean)) text = text.replaceAll(secret, '[REDACTED]');
+    if (/^\s*[\[{]/.test(text)) {
+      try { return JSON.stringify(redact(JSON.parse(text), secrets)); } catch { /* Fall through to conservative text redaction. */ }
+    }
+    if (/["']?(?:password|api[_-]?key|authorization|cookie|credential|secret|access[_-]?token|refresh[_-]?token)["']?\s*[:=]/i.test(text)) return '[REDACTED: credential-bearing text]';
     return text.replace(/Bearer\s+[^\s"'<>]+/gi, 'Bearer [REDACTED]')
       .replace(/\bsk-[A-Za-z0-9_-]+/g, '[REDACTED]');
   }
   if (Array.isArray(value)) return value.map(item => redact(item, secrets));
   if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([key, item]) => [key,
-    /authorization|api.?key|password|cookie|credential|secret|reasoning|chain.of.thought/i.test(key) ? '[REDACTED]' : redact(item, secrets)
+    /authorization|api.?key|password|cookie|credential|secret|access.?token|refresh.?token|reasoning|chain.of.thought/i.test(key) ? '[REDACTED]' : redact(item, secrets)
   ]));
   return value;
 }

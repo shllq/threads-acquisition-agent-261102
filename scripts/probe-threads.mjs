@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { chromium } from 'playwright';
+import { launchBrowser } from '../src/browser.mjs';
 
 export async function inspectPage(page, url, settleMs = 8000) {
   const response = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 });
@@ -31,7 +31,7 @@ async function main() {
   }
   const output = resolve(process.argv[3] ?? `artifacts/probe-${Date.now()}`);
   await mkdir(output, { recursive: true });
-  const browser = await chromium.launch();
+  const browser = await launchBrowser();
   let exitCode = 0;
   try {
     const context = await browser.newContext({ viewport: { width: 1280, height: 960 } });

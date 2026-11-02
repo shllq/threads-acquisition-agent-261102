@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { runAgent, redact } from '../src/agent.mjs';
 import { createModel } from '../src/model.mjs';
 import { readFile } from 'node:fs/promises';
-import { chromium } from 'playwright';
+import { launchBrowser } from '../src/browser.mjs';
 import { acquirePost, acquireProfile } from '../src/acquisition.mjs';
 
 const url = 'https://www.threads.com/@author/post/root';
@@ -20,7 +20,7 @@ function modelWith(decision = { continuation_ids: ['continued'], uncertain: fals
 }
 
 test('full workflow connects real Chromium acquisition to profile, result and trace assembly', async () => {
-  const browser = await chromium.launch();
+  const browser = await launchBrowser();
   try {
     const context = await browser.newContext({ serviceWorkers: 'block' });
     const page = await context.newPage();

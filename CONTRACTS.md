@@ -80,7 +80,7 @@ Termination statuses: `completed`, `blocked`, `timeout`, `failed`, `step_limit`.
 
 `completed` describes execution, not complete acquisition; its result status may be `partial`. A model-to-tool invocation can be correlated through call IDs in its recorded public response and the tool event. For this initial contract, request/response are completed call records, not streaming deltas.
 
-The schema checks structure, not secrets. The Agent redacts configured secrets, credential-shaped fields and common bearer/key patterns before trace persistence; the SDK adapter projects only public content and usage. This is not a universal secret detector. Trace persistence covers caught failures, not process crashes or filesystem failures. Never serialize raw SDK objects or private reasoning. A strict event object rejects additional top-level fields, but this does not sanitize arbitrary nested JSON.
+The schema checks structure, not secrets. The Agent redacts configured secrets, credential-shaped fields (including serialized JSON) and common bearer/key patterns before trace persistence; malformed credential-bearing text is conservatively omitted. The SDK adapter projects only public content and usage. This is not a universal secret detector. Trace persistence covers caught failures, not process crashes or filesystem failures. Never serialize raw SDK objects or private reasoning. A strict event object rejects additional top-level fields, but this does not sanitize arbitrary nested JSON.
 
 ## Validation
 

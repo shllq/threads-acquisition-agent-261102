@@ -29,7 +29,7 @@ Plans, schemas and milestone labels do not amend the assignment. This report is 
 ## Implementation requirements
 
 - **I1:** Node ESM, Playwright, Zod and official OpenAI SDK; fixed bounded workflow, not a custom Agent framework. At most two model calls, no retries, SDK timeout/output cap.
-- **I2:** Fresh non-persistent Chromium context, no private account/session or login bypass. Existing route checks are not a network sandbox; do not expose as an untrusted remote browsing service.
+- **I2:** Fresh non-persistent Chromium context, no private account/session or login bypass. All CLI launches use credential-isolated browser environments and a DNS-pinned public-IPv4/port-443 egress proxy. This is not an OS-level sandbox or an untrusted remote browsing service.
 
 ## Deliverables
 
@@ -42,7 +42,7 @@ Plans, schemas and milestone labels do not amend the assignment. This report is 
 
 ## Verification
 
-- **36 tests pass:** 27 existing contract/browser tests plus 9 Agent/SDK tests, including a complete fake-provider workflow through real Chromium fixtures.
+- **44 tests pass:** 27 contract/browser tests, 9 Agent/SDK tests and 8 security tests. Includes a complete fake-provider workflow through guarded Chromium, endpoint/credential/redaction checks and private-network denial.
 - Test-first Agent run failed on the missing module before implementation.
 - Agent tests cover source-backed selection/order, rejection of invalid IDs, profile-only projection, ambiguous empty continuations, missing evidence/usage, failed-call terminal traces and credential redaction.
 - SDK fake-client test verifies public content/usage projection and truncated-response rejection.
@@ -52,6 +52,6 @@ Plans, schemas and milestone labels do not amend the assignment. This report is 
 
 ## Next
 
-1. Configure `OPENAI_API_KEY`; run canonical/share natural-language cases and manually check continuation decisions.
+1. Provision macOS Keychain (or a credential-manager-injected `OPENAI_API_KEY` on other platforms); run canonical/share natural-language cases and manually check continuation decisions.
 2. Keep partial/uncertain statuses where evidence is incomplete; fix only demonstrated acquisition/classification gaps.
 3. Save sanitized successful output/trace examples, verify clean setup and publish to the agreed GitHub destination.

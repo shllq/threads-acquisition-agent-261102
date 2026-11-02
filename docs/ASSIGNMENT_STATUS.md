@@ -8,7 +8,14 @@
 shasum -a 256 -c init_assignment.sha256
 ```
 
-Plans, schemas and milestone labels do not amend the assignment. This report is a manual snapshot through live canonical/share acceptance checks and the reader-reply regression fix, not an automatic conformance guarantee.
+Plans, schemas and milestone labels do not amend the assignment. This report is a manual requirement-by-requirement snapshot, updated through the 2026-11-02 full regression and published CLI evidence. It is not an automatic conformance guarantee. Older run counts and token values below describe their historical checkpoints, not the latest totals.
+
+## Latest reviewer evidence
+
+- **58 offline tests passed; 10 opt-in paid/network cases skipped by default.** Four recorded-evidence classifier cases each passed three independent runs; six current-website CLI cases also passed.
+- The six CLI cases cover the original share URL, pinned-message exclusion, valid/unavailable post URLs, profile-name-only selection and content without continuations. Their nine model calls used **6,079 input + 301 output = 6,380 Tokens**, excluding the separate recorded-evidence classifier regressions.
+- [Runnable commands, per-case token table and all six result/trace pairs](../examples/README.md#cli-回歸用量與審閱證據) are available for review without credentials. The traces include the acquired public evidence; offline tests validate published schemas, source text and usage totals.
+- [Root README](../README.md) provides the short setup/design/verification/limitations/AI-use guide required by D3. No new broad-accuracy, cross-platform or reviewer-access guarantee is implied.
 
 ## Overall verdict
 
@@ -42,7 +49,7 @@ Plans, schemas and milestone labels do not amend the assignment. This report is 
 
 ## Verification
 
-- **54 offline tests pass; three paid regression tests are skipped by default:** 29 contract/browser tests, 12 Agent/SDK tests, 10 security tests, 2 Make shortcut tests and 1 published-example test. Includes a complete fake-provider workflow through guarded Chromium, endpoint/credential/redaction checks and private-network denial.
+- **58 offline tests pass; ten paid/network regression tests are skipped by default.** Includes contracts/browser acquisition, Agent/SDK behavior, ten security tests, Make shortcuts and published-example checks. Opt-in coverage comprises four recorded-evidence model tests and six live CLI tests; see the latest evidence above. Earlier installation checkpoints below retain their original counts.
 - Test-first Agent run failed on the missing module before implementation.
 - Agent tests cover source-backed selection/order, rejection of invalid IDs, profile-only projection, ambiguous empty continuations, missing evidence/usage, acquisition failure reasons for unavailable fields, preservation of available fields, failed-call terminal traces and credential redaction.
 - SDK fake-client test verifies public content/usage projection and truncated-response rejection.
@@ -59,5 +66,5 @@ Plans, schemas and milestone labels do not amend the assignment. This report is 
 ## Next
 
 1. Grant the assignment reviewers access to the private [GitHub repository](https://github.com/shllq/gogolook-test-261102) and submit its link. Visibility was preserved; no reviewer invitations were sent.
-2. If more evaluation time is available, test additional genuine-continuation and reader-reply conversations; current regressions cover reader-reply exclusion, an anonymous multipart conversation and recorded structural reader branches.
+2. If more evaluation time is available, test additional genuine-continuation and reader-reply conversations; current regressions cover reader-reply exclusion, an anonymous multipart conversation, recorded structural reader branches and a later pinned author message. Six CLI cases additionally exercise current public pages, but do not establish broad semantic accuracy.
 3. Keep partial/uncertain statuses where evidence is incomplete; do not claim exhaustive extraction. Fresh downloads passed locally, but another machine/OS and Node 22 remain unchecked.

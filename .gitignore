@@ -2,3 +2,5 @@ node_modules/
 artifacts/
 .env
 .pi/git/
+.DS_[Ss]tore
+/screenshots/

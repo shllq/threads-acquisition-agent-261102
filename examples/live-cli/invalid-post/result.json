@@ -1,0 +1,42 @@
+{
+  "status": "unavailable",
+  "source": {
+    "input_url": "https://www.threads.com/@rojiace/post/DfMburZGDEb",
+    "resolved_url": null
+  },
+  "extracted_at": "2026-11-02T07:28:31.515Z",
+  "requested_fields": [
+    "profile_name",
+    "follower_count",
+    "post_content",
+    "author_continuations"
+  ],
+  "data": {
+    "profile_name": {
+      "status": "unavailable",
+      "value": null,
+      "reason": "Acquisition failed: [\n  {\n    \"code\": \"custom\",\n    \"path\": [],\n    \"message\": \"Expected a Threads post or share URL.\"\n  }\n]"
+    },
+    "follower_count": {
+      "status": "unavailable",
+      "value": null,
+      "reason": "Acquisition failed: [\n  {\n    \"code\": \"custom\",\n    \"path\": [],\n    \"message\": \"Expected a Threads post or share URL.\"\n  }\n]"
+    },
+    "post_content": {
+      "status": "unavailable",
+      "value": null,
+      "reason": "Acquisition failed: [\n  {\n    \"code\": \"custom\",\n    \"path\": [],\n    \"message\": \"Expected a Threads post or share URL.\"\n  }\n]"
+    },
+    "author_continuations": {
+      "status": "unavailable",
+      "value": null,
+      "reason": "Acquisition failed: [\n  {\n    \"code\": \"custom\",\n    \"path\": [],\n    \"message\": \"Expected a Threads post or share URL.\"\n  }\n]"
+    }
+  },
+  "usage": {
+    "status": "known",
+    "input_tokens": 117,
+    "output_tokens": 19,
+    "total_tokens": 136
+  }
+}

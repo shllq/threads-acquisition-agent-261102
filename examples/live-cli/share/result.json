@@ -1,0 +1,50 @@
+{
+  "status": "partial",
+  "source": {
+    "input_url": "https://www.threads.com/share/GW3EPb5M8/",
+    "resolved_url": "https://www.threads.com/@whoscall_tw/post/Dd0_RGwH4K7"
+  },
+  "extracted_at": "2026-11-02T07:27:37.222Z",
+  "requested_fields": [
+    "profile_name",
+    "follower_count",
+    "post_content",
+    "author_continuations"
+  ],
+  "data": {
+    "profile_name": {
+      "status": "ok",
+      "value": "Whoscall"
+    },
+    "follower_count": {
+      "status": "ok",
+      "value": {
+        "display": "15,108",
+        "precision": "exact",
+        "count": 15108
+      }
+    },
+    "post_content": {
+      "status": "partial",
+      "value": "雖然明天要上班了\n但給大家一個好消息\n我們又要抽 iPhone ㄌ\niPhone 18 Pro喔",
+      "reason": "Post https://www.threads.com/@zh._.930/post/De4WOU4E6h5 has no unambiguous text block; skipped. Post https://www.threads.com/@shikanoko_61015/post/DewRXx4E6pg has no unambiguous text block; skipped. Public rendered view only; parent IDs record recognized connector edges, not complete reply relationships. Rendered text may be truncated; no expansion or additional loading was attempted. A login/sign-in prompt is present; no login or access-limit bypass was attempted."
+    },
+    "author_continuations": {
+      "status": "partial",
+      "value": [
+        {
+          "id": "Dd0_RHRH6h9",
+          "url": "https://www.threads.com/@whoscall_tw/post/Dd0_RHRH6h9",
+          "text": "這邊了解活動詳情👉🏻 whoscalltw.pse.is/9p2dw…"
+        }
+      ],
+      "reason": "The candidate post is by the same author, is top-level with no parent, and clearly continues the original message by providing a link to the event details about the iPhone giveaway, which adds to the original announcement for the general audience. Post https://www.threads.com/@zh._.930/post/De4WOU4E6h5 has no unambiguous text block; skipped. Post https://www.threads.com/@shikanoko_61015/post/DewRXx4E6pg has no unambiguous text block; skipped. Public rendered view only; parent IDs record recognized connector edges, not complete reply relationships. Rendered text may be truncated; no expansion or additional loading was attempted. A login/sign-in prompt is present; no login or access-limit bypass was attempted."
+    }
+  },
+  "usage": {
+    "status": "known",
+    "input_tokens": 835,
+    "output_tokens": 89,
+    "total_tokens": 924
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "status": "partial",
+  "source": {
+    "input_url": "https://www.threads.com/@rojiace/post/DfMburZGDEA",
+    "resolved_url": "https://www.threads.com/@rojiace/post/DfMburZGDEA"
+  },
+  "extracted_at": "2026-11-02T07:28:13.148Z",
+  "requested_fields": [
+    "profile_name",
+    "follower_count",
+    "post_content",
+    "author_continuations"
+  ],
+  "data": {
+    "profile_name": {
+      "status": "ok",
+      "value": "RojiAce"
+    },
+    "follower_count": {
+      "status": "ok",
+      "value": {
+        "display": "5,472",
+        "precision": "exact",
+        "count": 5472
+      }
+    },
+    "post_content": {
+      "status": "partial",
+      "value": "在推特上收集一些日本今年的 地味萬聖節 裝扮。🤣\n1、不看密碼貼心的店員\n2、把狗飼料誤買成下酒菜的外國人\n3、排隊末端引導員\n4、旅遊節目中，移動途中播放的動畫\n5、日綜：日本！我來了，會採訪的外國人\n6、我可以把椅背往後調嗎？\n7、廣告播完後才會揭曉真面目的神秘人物\n8、原本只打算買雞蛋的人\n9、從永旺購物回來，在停車場找不到自己車子的人\n10、在電車上不小心看到超好笑影片的人\n11、因為手太乾燥，怎麼樣都打不開超市塑膠袋的人\n12、新車交車儀式\n13、幫忙按住電梯門的人\n14、歡送會上，始終無法融入任何一個聊天圈子的人\n15、參加完婚禮後，因為腳痛而買了一雙運動鞋的人\n16、聚餐喝酒時，把攪拌棒誤當成吸管吸的人\n17、天才\n18、靠著把衣服一層層穿上身，來解決行李超重問題的人",
+      "reason": "Post https://www.threads.com/@bearbellafamily/post/DfMwcFUkVdb has no unambiguous text block; skipped. Post https://www.threads.com/@s_h_e_r_r_y_weng/post/DfMzOn-k7mc has no unambiguous text block; skipped. Public rendered view only; parent IDs record recognized connector edges, not complete reply relationships. Rendered text may be truncated; no expansion or additional loading was attempted. A login/sign-in prompt is present; no login or access-limit bypass was attempted."
+    },
+    "author_continuations": {
+      "status": "uncertain",
+      "value": null,
+      "reason": "No posts by the original author continuing the initial list post; all other posts are reader comments or replies. Post https://www.threads.com/@bearbellafamily/post/DfMwcFUkVdb has no unambiguous text block; skipped. Post https://www.threads.com/@s_h_e_r_r_y_weng/post/DfMzOn-k7mc has no unambiguous text block; skipped. Public rendered view only; parent IDs record recognized connector edges, not complete reply relationships. Rendered text may be truncated; no expansion or additional loading was attempted. A login/sign-in prompt is present; no login or access-limit bypass was attempted."
+    }
+  },
+  "usage": {
+    "status": "known",
+    "input_tokens": 1492,
+    "output_tokens": 54,
+    "total_tokens": 1546
+  }
+}

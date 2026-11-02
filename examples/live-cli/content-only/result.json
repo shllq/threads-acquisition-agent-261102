@@ -1,0 +1,38 @@
+{
+  "status": "partial",
+  "source": {
+    "input_url": "https://www.threads.com/@wheretogo_blue/post/DfN7KeGkuzN",
+    "resolved_url": "https://www.threads.com/@wheretogo_blue/post/DfN7KeGkuzN"
+  },
+  "extracted_at": "2026-11-02T07:28:56.464Z",
+  "requested_fields": [
+    "profile_name",
+    "follower_count",
+    "post_content"
+  ],
+  "data": {
+    "profile_name": {
+      "status": "ok",
+      "value": "藍藍去哪兒"
+    },
+    "follower_count": {
+      "status": "ok",
+      "value": {
+        "display": "3,643",
+        "precision": "exact",
+        "count": 3643
+      }
+    },
+    "post_content": {
+      "status": "partial",
+      "value": "政府出錢你出國✈️\n青年百億海外圓夢計畫「18–30歲組」\n🌍 M-6 環境永續及生態關懷計畫\n喜歡動物、海洋、生態或永續議題嗎？這次有機會到日本動物園、帛琉海洋保育現場，甚至前進英國皇家植物園邱園！🌱\n🇯🇵 M-6-1 熊本未來生存課\n📍日本熊本｜23天｜15名\n走訪公害修復、防災與草原保育場域，從真實案例學習人與自然共生。\n🇺🇸 M-6-2 蚊蟲治理新思維\n📍美國佛州聖奧古斯丁｜79天｜5名\n進入蚊蟲管理特區，學習野外監測、資料分析與防治研究。\n🇯🇵 M-6-3 探索沖繩生物多樣保育\n📍日本沖繩｜17天｜15名\n參與生物多樣性調查，學習田野調查方法與保育政策。\n🇫🇯 M-6-4 斐濟水產孵育與復育\n📍斐濟 Rakiraki｜165天｜1名\n蹲點水產站，從水質檢測、蝦苗孵育到養殖管理，學習永續水產技術。\n🇵🇼 M-6-5 守護帛琉海洋保育計畫\n📍帛琉科羅爾｜85天｜3名\n學習潛水與海洋保育，探索海洋環境並參與實際守護行動。\n🇬🇧 M-6-6 館藏裡的植物經濟學\n📍英國倫敦｜184天｜1名\n加入英國邱園經濟植物標本館，整理、編目與數位化館藏，探索植物與人類生活的關係。",
+      "reason": "Post https://www.threads.com/@hqz1969/post/De1WluUkxCT has no unambiguous text block; skipped. Post https://www.threads.com/@leah_9_19/post/Dd_8LCVEmgQ has no unambiguous text block; skipped. Public rendered view only; parent IDs record recognized connector edges, not complete reply relationships. Rendered text may be truncated; no expansion or additional loading was attempted. A login/sign-in prompt is present; no login or access-limit bypass was attempted."
+    }
+  },
+  "usage": {
+    "status": "known",
+    "input_tokens": 117,
+    "output_tokens": 14,
+    "total_tokens": 131
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "status": "partial",
+  "source": {
+    "input_url": "https://www.threads.com/@kasumitoiu/post/DP1T59_E9_6",
+    "resolved_url": "https://www.threads.com/@kasumitoiu/post/DP1T59_E9_6"
+  },
+  "extracted_at": "2026-11-02T07:27:55.311Z",
+  "requested_fields": [
+    "profile_name",
+    "follower_count",
+    "post_content",
+    "author_continuations"
+  ],
+  "data": {
+    "profile_name": {
+      "status": "ok",
+      "value": "Sylvia Lee"
+    },
+    "follower_count": {
+      "status": "ok",
+      "value": {
+        "display": "627",
+        "precision": "exact",
+        "count": 627
+      }
+    },
+    "post_content": {
+      "status": "partial",
+      "value": "雖遲，但到。\n我們的馬太鞍溪堰塞湖報導終於上線了。\ncw.com.tw/graph…\n在馬太鞍堰塞湖溢流潰壩的起初，我們快速的從衛星影像上掌握受災範圍，先出了圖卡。當時各家同業精銳盡出，厲害的報導一個接著一個。其實我想過我們不要出了，但隔壁同業踢了我一腳，叫我們一定要做。\n我們受困於一個節點：事情到底怎麼發生的？從哪個環節開始釀禍？\n還記得嗎？一開始的風向是，這麼大的堰塞湖，政府沒有預警，一夕間要求撤離八千人，草菅人命！\n而事實卻是，我們在七月底，就曾被農業部的人提醒，馬太鞍堰塞湖這個議題應該要被重視。",
+      "reason": "Public rendered view only; parent IDs record recognized connector edges, not complete reply relationships. Rendered text may be truncated; no expansion or additional loading was attempted. A login/sign-in prompt is present; no login or access-limit bypass was attempted."
+    },
+    "author_continuations": {
+      "status": "partial",
+      "value": [
+        {
+          "id": "DP1T6jKkwch",
+          "url": "https://www.threads.com/@kasumitoiu/post/DP1T6jKkwch",
+          "text": "這篇報導難能可貴的是（啊老王賣瓜一下，是我自己覺得可貴），我們第一手訪到了台大跨校專家團隊、陽交大團隊、農業部林保署、水保署、前內政部長李鴻源，以及潰壩當晚就趕抵災區的志工，還有最重要的——馬太鞍溪下游的受災民眾。\n他們有的跟著族人撤離到高處，目睹了馬太鞍溪橋被沖毀，大喊著，「橋沒了！唯一的路！回不去了！」\n有的災民則是幫助我們重建了洪水湧入的時序——從影片的metadata中找到確切的時間。\n他甚至提供了目擊警車廣播的關鍵瞬間，然後不到5分鐘，泥水便沖進他的家。他說，「我當下在想怎麼拍，可以讓外界看得清楚、傳播最快，同時也在想要怎麼顧好家人。」"
+        },
+        {
+          "id": "DP1T6-9k4Gp",
+          "url": "https://www.threads.com/@kasumitoiu/post/DP1T6-9k4Gp",
+          "text": "最大的爭端，學界的預測。\n記得第一次見到游老師的團隊，是在教師節連假，當時他們剛開完內政部的閉門會議。\n訪問開始時，他們不約而同都說了：以往我們是研究過去，但這次我們卻是要預測，是真正的攸關人命。\n他們急於告訴我們的是，科研沒有對錯。事實上，農業部版本和內政部版本並沒有差非常多（報導中有取得兩版圖資），關鍵差異在於對減災手段的看法，陽交大模擬計入了堤防等搶險措施，認為會對阻擋洪水有用，而台大跨校團隊則認為高含砂洪水都會讓一切手段失效，並建議撤離馬太鞍溪橋和堤防的監測人員，因為馬太鞍溪橋絕對撐不住。\n游老師說，9/19他們提交了結果，9/21內政部拍板，9/23整個團隊無不緊盯水位計，那一天他因為牙痛要拔牙，躺在診療床上想的卻是：那個8000人版本我們有沒有哪裡算錯？\n只是他們沒有料到的是，地方並未完成撤離。光復鄉傷亡慘重。很遺憾很遺憾。\n其實兩方團隊都在第一時間提交非常多情境模擬，我問我同事，是什麼讓內政部拍板要採用最保守的情境？資深記者長吁一口氣說，「那就是內政部的政治決定。」"
+        },
+        {
+          "id": "DP1T7ehE9J0",
+          "url": "https://www.threads.com/@kasumitoiu/post/DP1T7ehE9J0",
+          "text": "「算錯了，是不是就會引起民怨？」\n在不同的採訪中，所有人都提到了「害怕民怨」。在這個事件中，一種保守是不擾民，另一種保守卻是恰恰相反。\n事發的當天，我跟我的室友正在聊，我們是否對災害的警覺性太低？就好比如果哪天台北發細胞簡訊說陽明山火山噴發了，叫我趕快避難，我第一個想法應該是「蛤」，然後可能就沒有然後了。\n志工告訴我，鏟子超人的下一步，是計劃在全台各地推廣防災課程，讓民眾面對災害，不再這麼脆弱無助。\n這個週末又有颱風要來了，中央地方的角力仍未消停。晚上和災民聊了起來，他說他正在忙於整理家中散落的物品，把還能用的櫃體重新拆裝，得在颱風來之前打包到到高樓層。\n他傳給了我一張照片，白色的牆殘餘著水痕，他在上面用藍色筆寫著：「2025.09.23」。"
+        },
+        {
+          "id": "DP1T8A2k03k",
+          "url": "https://www.threads.com/@kasumitoiu/post/DP1T8A2k03k",
+          "text": "願平安。"
+        }
+      ],
+      "reason": "These posts are by the original author 'kasumitoiu', form a continuation chain expanding on the initial report, and do not appear to address or reply to reader comments or questions but rather add content to the original report narrative. Public rendered view only; parent IDs record recognized connector edges, not complete reply relationships. Rendered text may be truncated; no expansion or additional loading was attempted. A login/sign-in prompt is present; no login or access-limit bypass was attempted."
+    }
+  },
+  "usage": {
+    "status": "known",
+    "input_tokens": 3413,
+    "output_tokens": 118,
+    "total_tokens": 3531
+  }
+}

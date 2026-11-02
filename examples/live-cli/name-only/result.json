@@ -1,0 +1,23 @@
+{
+  "status": "complete",
+  "source": {
+    "input_url": "https://www.threads.com/@whoscall_tw/post/De6Yqf8nxuz",
+    "resolved_url": "https://www.threads.com/@whoscall_tw/post/De6Yqf8nxuz"
+  },
+  "extracted_at": "2026-11-02T07:28:40.170Z",
+  "requested_fields": [
+    "profile_name"
+  ],
+  "data": {
+    "profile_name": {
+      "status": "ok",
+      "value": "Whoscall"
+    }
+  },
+  "usage": {
+    "status": "known",
+    "input_tokens": 105,
+    "output_tokens": 7,
+    "total_tokens": 112
+  }
+}

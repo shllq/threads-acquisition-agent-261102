@@ -10,6 +10,10 @@ shasum -a 256 -c init_assignment.sha256
 
 Plans, schemas and milestone labels do not amend the assignment. This report is a manual requirement-by-requirement snapshot, updated through the 2026-11-02 full regression and published CLI evidence. It is not an automatic conformance guarantee. Older run counts and token values below describe their historical checkpoints, not the latest totals.
 
+## Publication
+
+The public repository is [shllq/threads-acquisition-agent-261102](https://github.com/shllq/threads-acquisition-agent-261102). It retains the full existing commit history; the original private repository is preserved separately. Earlier commits can still contain the former repository name, even though current tracked files use neutral references. Historical private-repository/access observations below describe the earlier delivery checkpoint, not a restriction on the public repository.
+
 ## Latest reviewer evidence
 
 - **58 offline tests passed; 10 opt-in paid/network cases skipped by default.** Four recorded-evidence classifier cases each passed three independent runs; six current-website CLI cases also passed.
@@ -19,7 +23,7 @@ Plans, schemas and milestone labels do not amend the assignment. This report is 
 
 ## Overall verdict
 
-**Implemented, checked live on canonical/share inputs, and uploaded to [GitHub](https://github.com/shllq/gogolook-test-261102); reviewer access and broader accuracy evaluation remain open.** The repository is private; grant reviewers access before submitting the link. The CLI selects requested fields, acquires anonymous browser evidence, classifies continuations, and emits source-backed JSON plus sanitized traces. An existing live share artifact exposed a reader reply misclassified as a continuation. The old prompt reproduced that failure; the revised prompt passed three recorded-case model runs and a fresh live share run. A later tai_wan_lan run showed the revised prompt still included reader replies. Connector extraction and deterministic ancestry eligibility now exclude recognized reader branches and unresolved recorded parents; fresh tai_wan_lan/multipart/share CLI checks and three recorded-case regressions passed. This remains narrow evidence, not a general accuracy guarantee.
+**Implemented, checked live on canonical/share inputs, and published to the public GitHub repository; broader accuracy evaluation remains open.** Public source and examples can be reviewed without an invitation. The CLI selects requested fields, acquires anonymous browser evidence, classifies continuations, and emits source-backed JSON plus sanitized traces. An existing live share artifact exposed a reader reply misclassified as a continuation. The old prompt reproduced that failure; the revised prompt passed three recorded-case model runs and a fresh live share run. A later tai_wan_lan run showed the revised prompt still included reader replies. Connector extraction and deterministic ancestry eligibility now exclude recognized reader branches and unresolved recorded parents; fresh tai_wan_lan/multipart/share CLI checks and three recorded-case regressions passed. This remains narrow evidence, not a general accuracy guarantee.
 
 ## Feature requirements
 
@@ -42,7 +46,7 @@ Plans, schemas and milestone labels do not amend the assignment. This report is 
 
 | ID | Status / remaining work |
 |---|---|
-| D1 GitHub source/dependencies/setup | Lockfile and setup instructions exist. A temporary checkout with empty npm/browser caches passed dependency installation, fresh Chromium download, 54 offline tests and canonical/share live CLI checks on macOS arm64 / Node 26.12.0. Source/examples pushed to [`shllq/gogolook-test-261102`](https://github.com/shllq/gogolook-test-261102) on `main`, with remote/local commit identity verified. Repository is private; reviewer access is not verified. Another machine/OS and the Node 22 minimum remain unverified. |
+| D1 GitHub source/dependencies/setup | Lockfile and setup instructions exist. A temporary checkout with empty npm/browser caches passed dependency installation, fresh Chromium download, 54 offline tests and canonical/share live CLI checks on macOS arm64 / Node 26.12.0. Source/examples pushed to the configured GitHub repository on `main`, with remote/local commit identity verified. The original private delivery is historical; the new public repository is linked above. Another machine/OS and the Node 22 minimum remain unverified. |
 | D2 CLI examples/result/log | README has runnable original-style message; sanitized successful share result/trace JSON and an acceptance summary are committed under `examples/`. |
 | D3 README | Design, setup, validation, limitations, AI assistance and actual live model findings documented. |
 | D4 JSON terminal/file | CLI writes result to stdout and `result.json`, trace to `trace.json`; errors use an error object and nonzero exit. |
@@ -61,10 +65,10 @@ Plans, schemas and milestone labels do not amend the assignment. This report is 
 - Fresh-install follow-up: a temporary checkout with empty npm and Playwright caches passed `npm ci` (zero audit vulnerabilities), `npx playwright install chromium` (Chromium v1248) and 54 offline tests, with 3 paid regressions skipped. Canonical/share CLI checks from that install returned HTTP 200 for posts/profiles, expected continuations, preserved source text and partial results (875/927 tokens). Tested on macOS arm64 / Node 26.12.0, not another machine/OS or Node 22.
 - Connector-first follow-up: fresh tai_wan_lan, multipart and share runs returned two/three/one expected continuations (1,891/2,460/921 tokens). All three recorded cases passed three model runs each. Seven ambiguous/missing text blocks remain on tai_wan_lan; incomplete ancestry is not filled in.
 - GitHub upload: configured the user-supplied HTTPS remote and pushed `main`; verified the remote commit matches local HEAD. Scanned tracked files and Git patch history for the configured API key and selected high-signal credential patterns; no matches. This is not a universal secret audit. `.env`, artifacts and untracked `notes.md` were excluded.
-- **No broad model-accuracy benchmark, other-machine/OS or Node 22 setup check, crash-recovery validation or reviewer-access check yet.**
+- **No broad model-accuracy benchmark, other-machine/OS or Node 22 setup check, or crash-recovery validation yet.** The source/examples are now public; no reviewer invitation is required.
 
 ## Next
 
-1. Grant the assignment reviewers access to the private [GitHub repository](https://github.com/shllq/gogolook-test-261102) and submit its link. Visibility was preserved; no reviewer invitations were sent.
+1. Share the public repository link above. The original private repository was not renamed, deleted or made public; the new repository preserves the existing history.
 2. If more evaluation time is available, test additional genuine-continuation and reader-reply conversations; current regressions cover reader-reply exclusion, an anonymous multipart conversation, recorded structural reader branches and a later pinned author message. Six CLI cases additionally exercise current public pages, but do not establish broad semantic accuracy.
 3. Keep partial/uncertain statuses where evidence is incomplete; do not claim exhaustive extraction. Fresh downloads passed locally, but another machine/OS and Node 22 remain unchecked.

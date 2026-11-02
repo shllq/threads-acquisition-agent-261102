@@ -4,7 +4,7 @@
 
 本專案依 [原始題目](init_assignment.md) 實作；逐項驗證範圍與剩餘限制見 [需求對照](docs/ASSIGNMENT_STATUS.md)。
 
-[GitHub 儲存庫](https://github.com/shllq/gogolook-test-261102) · **私人儲存庫，審閱者需先取得存取權限。**
+[GitHub 原始碼](https://github.com/shllq/threads-acquisition-agent-261102) · [執行範例與證據](examples/README.md) · [安全說明](docs/SECURITY.md)
 
 ## 先看交付成果
 
@@ -15,8 +15,8 @@
 需要 **Node.js 22+**、npm、Chromium 與 OpenAI API Key。
 
 ```sh
-git clone https://github.com/shllq/gogolook-test-261102.git
-cd gogolook-test-261102
+git clone https://github.com/shllq/threads-acquisition-agent-261102.git
+cd threads-acquisition-agent-261102
 npm ci
 npx playwright install chromium
 cp .env.example .env

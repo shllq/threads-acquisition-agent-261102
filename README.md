@@ -54,7 +54,7 @@ The paid regression is opt-in and uses recorded public evidence (no browser):
 RUN_LIVE_MODEL=1 node --test test/live-continuations.test.mjs
 ```
 
-It runs three two-call workflows and saves sanitized local artifacts. Ordinary `npm test` skips it. A clean temporary dependency install and offline suite passed on this machine, using the existing Playwright browser cache; a new-machine browser installation has not been verified.
+It checks reader-reply exclusion and anonymous multipart continuation selection, running three two-call workflows per case (up to twelve model calls) and saving sanitized local artifacts. The multipart case does not rely on login-only sequence badges; see the [screenshot comparison and findings](examples/README.md#multipart-badge-investigation-wheretogo_blue). Ordinary `npm test` skips it. A clean temporary dependency install and offline suite passed on this machine, using the existing Playwright browser cache; a new-machine browser installation has not been verified.
 
 ## Project planning
 

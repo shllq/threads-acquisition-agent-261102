@@ -83,14 +83,14 @@ Local evidence (ignored by Git, not guaranteed to accompany a clone):
 | Screenshot inspection | Sign-in overlay observed. |
 | LLM/model usage | Live `gpt-4.1-mini`: canonical/share all-fields and profile-only runs passed; usage 821/872/120 tokens. |
 | crapper / dryer / mutator | Not run: not installed. |
-| End-to-end assignment acceptance | Three live CLI cases checked; one classification regression passed in three model runs. Broader accuracy, exhaustive extraction and publication not established. |
-| Current offline suite | 49 pass, 1 paid live test skipped by default; clean temporary dependency install also passed. |
+| End-to-end assignment acceptance | Three live CLI cases checked; reader-reply and anonymous multipart regressions each passed in three model runs. Broader accuracy, exhaustive extraction and publication not established. |
+| Current offline suite | 49 pass, 2 paid live tests skipped by default; clean temporary dependency install also passed. |
 
 ## Next steps
 
 1. Configure the agreed GitHub remote and publish reviewed code/examples. No destination is currently configured.
-2. Broaden continuation evaluation if time permits. The recorded share case reproduced the old prompt's false-positive apology; the revised prompt excluded it in three model runs and a fresh live share run. See `examples/README.md`; this is not a broad accuracy benchmark.
-3. Verify browser installation on a new machine if required. Clean temporary `npm ci` and 49 offline tests passed here, but reused the existing Playwright browser cache. The paid live test is opt-in and skipped by default.
+2. Broaden continuation evaluation if time permits. The recorded share case reproduced the old prompt's false-positive apology; the revised prompt excluded it in three model runs and a fresh live share run. The anonymous multipart case also passed three model runs without sequence badges. See `examples/README.md` for the user's login-dependent badge finding; these two cases are not a broad accuracy benchmark.
+3. Verify browser installation on a new machine if required. Clean temporary `npm ci` and 49 offline tests passed here, but reused the existing Playwright browser cache. The two paid live tests are opt-in and skipped by default.
 4. Extend acquisition/expansion only for demonstrated incomplete cases; no exhaustive-loading claim is permitted. CLI egress remains application-level public-HTTPS protection, not an OS sandbox. Abrupt termination/crash persistence remains unimplemented.
 
 ## Repository state at planning checkpoint

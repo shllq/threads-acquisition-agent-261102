@@ -20,7 +20,7 @@ Plans, schemas and milestone labels do not amend the assignment. This report is 
 |---|---|---|
 | F1 | Display name, followers, original post and author continuations; requested combinations | CLI model field selection, conditional profile acquisition and exact field projection implemented. All 15 combinations are contract-tested; all-fields and profile-name-only messages were also verified live. |
 | F2 | Canonical and share URLs, one per task | Deterministic route/cardinality validation before model/browser access. Both canonical and share model-driven CLI paths completed live with source-backed partial results. |
-| F3 | Original text/order; exclude readers, author-reader replies and recommendations | Model selects evidence IDs; deterministic assembly preserves text and observed order and rejects root, reader, recommendation, preceding or unknown IDs. Recommendations already filtered structurally. The revised prompt excluded the observed reader-response apology in three recorded-case model runs and a fresh live share run; other conversations remain unevaluated. No expansion/truncation proof; post content remains partial. |
+| F3 | Original text/order; exclude readers, author-reader replies and recommendations | Model selects evidence IDs; deterministic assembly preserves text and observed order and rejects root, reader, recommendation, preceding or unknown IDs. Recommendations already filtered structurally. The revised prompt excluded the observed reader-response apology in three recorded-case model runs and a fresh live share run; the anonymous multipart case also retained all three expected continuations in three recorded-evidence model runs. Broader accuracy remains unevaluated. No expansion/truncation proof; post content remains partial. |
 | F4 | Contextual distinction of continuations vs author-reader replies | Classifier receives conversation context and explicit instructions that same author/marker/adjacency are insufficient. Uncertainty retained; continuations never claimed exhaustive. A reader-response failure was reproduced and corrected on one observed conversation; fake-provider tests and this narrow live regression cannot establish general semantic accuracy. |
 | F5 | Source URL, extraction time, task tokens or cost | Result includes input/resolved URL, observation timestamp and aggregate tokens across all model calls. Missing provider usage is unknown, never synthetic zero. Cost reporting not needed when tokens are available. |
 | F6 | Explain inaccessible/incomplete/uncertain data; no fabrication | Browser limitations propagated for observed post/continuations; missing fields unavailable, ambiguous/empty continuation selection uncertain. Failed workflow returns error JSON rather than fabricated result. |
@@ -42,7 +42,7 @@ Plans, schemas and milestone labels do not amend the assignment. This report is 
 
 ## Verification
 
-- **49 offline tests pass; one paid regression test is skipped by default:** 27 contract/browser tests, 9 Agent/SDK tests, 10 security tests, 2 Make shortcut tests and 1 published-example test. Includes a complete fake-provider workflow through guarded Chromium, endpoint/credential/redaction checks and private-network denial.
+- **49 offline tests pass; two paid regression tests are skipped by default:** 27 contract/browser tests, 9 Agent/SDK tests, 10 security tests, 2 Make shortcut tests and 1 published-example test. Includes a complete fake-provider workflow through guarded Chromium, endpoint/credential/redaction checks and private-network denial.
 - Test-first Agent run failed on the missing module before implementation.
 - Agent tests cover source-backed selection/order, rejection of invalid IDs, profile-only projection, ambiguous empty continuations, missing evidence/usage, failed-call terminal traces and credential redaction.
 - SDK fake-client test verifies public content/usage projection and truncated-response rejection.
@@ -50,11 +50,12 @@ Plans, schemas and milestone labels do not amend the assignment. This report is 
 - Prior canonical/share browser acquisitions succeeded live; the recommendation flag was additionally verified on the real canonical page before M4.
 - Fresh live canonical/share all-fields runs completed with partial results (821/872 tokens); profile-name-only returned exactly that field (120 tokens).
 - The old classifier selected a reader reply on the recorded share case. The revised prompt passed three independent model runs and fresh live share acquisition; see `examples/README.md` for scope and evidence.
+- The anonymous `@wheretogo_blue` multipart regression retained all three manually labeled continuations in order in three model runs, preserving source text and partial status without sequence badges. The user's logged-in/logged-out screenshots explain the badge difference for this example; no private login state is used.
 - Clean temporary dependency installation and the offline suite passed; browser binaries came from the existing machine cache.
 - **No broad model-accuracy benchmark, new-machine browser setup, crash-recovery validation or GitHub delivery yet.**
 
 ## Next
 
 1. Agree on the GitHub destination, configure a remote and publish the reviewed source/examples.
-2. If more evaluation time is available, test additional genuine-continuation and reader-reply conversations; the current regression covers only one failure case.
+2. If more evaluation time is available, test additional genuine-continuation and reader-reply conversations; current regressions cover one reader-reply failure case and one anonymous multipart conversation.
 3. Keep partial/uncertain statuses where evidence is incomplete. New-machine browser installation remains unchecked; do not claim exhaustive extraction.

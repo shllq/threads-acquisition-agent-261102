@@ -1,7 +1,23 @@
-# Threads acquisition — browser evidence tools
+# Threads acquisition Agent
 
-This project currently provides an anonymous-browser probe, structured evidence acquisition and data contracts, not the completed extraction Agent.
+A bounded CLI Agent selects requested fields with OpenAI, acquires public Threads evidence in anonymous Chromium, and optionally classifies author continuations by context. It preserves source text by evidence ID and writes result JSON plus a sanitized execution trace. The workflow is fixture-tested; live model accuracy and end-to-end acceptance remain unverified.
 Requires Node.js 22+ and npm.
+
+## Run the Agent
+
+```sh
+npm ci
+npx playwright install chromium
+export OPENAI_API_KEY='your-key' # Keep credentials out of source control.
+export OPENAI_MODEL='gpt-4.1-mini' # Optional; this is the default.
+npm run --silent agent -- '請取得這篇 Threads 作者的個人檔案名稱、追蹤者數量、貼文內容及續文：https://www.threads.com/share/GW3EPb5M8/' artifacts/my-run
+```
+
+Quote the entire message as one argument; the optional second argument is the output directory. stdout contains result JSON; `result.json` and `trace.json` are written there. Failures save an error object and terminal trace and exit nonzero; wholly unavailable data also exits nonzero. Partial/uncertain results exit zero and must be interpreted by their field statuses. Missing credentials fail before browsing.
+
+The official OpenAI SDK makes at most two calls: requested-field selection and, only when requested and a target exists, contextual continuation selection. Calls have a 30-second SDK timeout, no automatic retries and a 2,000-output-token cap. Browser acquisition is bounded independently. Only the author's requested profile fields trigger profile acquisition. Model selections must reference eligible same-author evidence IDs; output text comes directly from evidence in observed order, never model-written text. Contextual classification can still be wrong: no live model evaluation has been performed. Post text is conservatively partial (no expansion proof); continuations are partial or uncertain, never claimed exhaustive.
+
+Trace records contain public model messages/content, tool inputs/results, per-call usage and terminal status—not raw SDK objects or private reasoning. All model usage is summed; omitted usage stays unknown. The configured API key, credential-shaped object fields and common bearer/key patterns are redacted. Review logs before sharing: this is not a universal arbitrary-secret detector, and public conversation context can appear in tool/model logs. Completed/failed runs persist traces; process termination, machine crashes and filesystem failures are not crash-recoverable.
 
 ## Project planning
 
@@ -63,6 +79,6 @@ Evidence is saved locally in `artifacts/whoscall-initial/` and `artifacts/whosca
 
 `npm test` also validates all 15 nonempty requested-field combinations, missing/uncertain data, follower precision, token totals, evidence identity and trace terminal/error states. The initial browser test uses real Chromium against a local fixture server. Additional synthetic browser fixtures test post boundaries, original rendered text, recommendation exclusion, client-side redirects (including HTTP errors), missing/ambiguous/hidden/conflicting evidence, rounded/exact profile counts, invalid inputs and timeouts. Fixture provenance is documented in `test/fixtures/README.md`. Live network observations are separate from deterministic tests.
 
-No LLM is called yet, so there is no model usage or model trace. The probe does not emit the Agent result schema defined in `src/contracts.mjs`. Incremental loading, natural-language/model orchestration, automatic continuation classification, aggregate token accounting and credential-redacted Agent tracing remain to be implemented. The acquisition tools validate input and final-document routes, but do not implement a browser network sandbox or preflight every redirect/resource destination; do not expose them as an untrusted remote browsing service. The probe captures public rendered text and links, not browser cookies, headers or storage. Review artifacts before sharing, since public links can still contain tracking parameters.
+The probe/acquisition commands remain evidence tools, separate from the Agent result interface. The Agent now implements model orchestration, contextual continuation selection, aggregate usage and redacted tracing with deterministic fake-provider tests. Live model accuracy, incremental loading, clean-install verification and GitHub delivery remain pending. The acquisition tools validate input and final-document routes, but do not implement a browser network sandbox or preflight every redirect/resource destination; do not expose them as an untrusted remote browsing service. The probe captures public rendered text and links, not browser cookies, headers or storage. Review artifacts before sharing, since public links can still contain tracking parameters.
 
 AI assistance was used to write the probe, contracts, structured acquisition, tests and documentation, and to run and interpret the live browser observations.

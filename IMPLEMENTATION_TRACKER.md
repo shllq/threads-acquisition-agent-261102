@@ -13,8 +13,8 @@ Status describes verified implementation, not proposed features. Update this fil
 | M1 Anonymous-browser feasibility | Initial probe complete | Supplied canonical post and profile returned HTTP 200; fresh Chromium contexts; JSON and screenshots saved locally. Share URL and broader conversation structures remain unverified. |
 | M2 Contracts and validation | Implemented and fixture-tested | Zod request/evidence/result/usage/trace contracts and pure result assembly; field-selection and uncertainty tests. See `CONTRACTS.md`. Probe JSON remains separate from the result schema. |
 | M3 Structural acquisition | Initial structural path implemented and verified | Separate post/profile evidence; recommendation exclusion; canonical/share live checks; fresh contexts. Reply relationships remain unknown, completeness false, and additional loading/expansion is not implemented. |
-| M4 End-to-end Agent | Not started | No model SDK, natural-language input handling, tool loop or final result assembly yet. |
-| M5 Continuations and tracing | Not started | No automatic continuation classification, aggregate model usage or redacted Agent trace yet. |
+| M4 End-to-end Agent | Implemented; deterministic workflow tested | Natural-language CLI, official OpenAI SDK, bounded tool orchestration and result assembly. Live model run pending API key. |
+| M5 Continuations and tracing | Initial implementation; live accuracy unverified | Model selects continuation evidence IDs by context; source text/order preserved; total usage and sanitized traces persisted, including failures. No crash recovery. |
 | M6 Delivery | Partial documentation only | Probe README exists. Final examples, clean-install verification and GitHub delivery pending. |
 
 ## Completed implementation
@@ -87,9 +87,9 @@ Local evidence (ignored by Git, not guaranteed to accompany a clone):
 
 ## Next steps
 
-1. Select/configure the model SDK/provider and implement the natural-language CLI vertical slice (M4), reusing structural evidence rather than page text. No common model API-key environment variables were detected at M2 (names checked without printing values).
-2. Classify continuations contextually, preserve original text via evidence IDs and mark incomplete/ambiguous paths honestly. Null reply relationships and an Author marker are not positive proof.
-3. Add bounded orchestration, aggregate usage, redacted call/result persistence and terminal states alongside the Agent (M4/M5).
+1. Configure `OPENAI_API_KEY` and run the natural-language CLI against canonical/share inputs. Current total: 36 passing tests; live model behavior is not verified.
+2. Manually evaluate continuation selection against genuine continuations and reader/author exchanges; record classification errors rather than equating fake-provider tests with model accuracy.
+3. Publish sanitized successful result/trace examples. The no-key CLI failure path has been exercised locally; abrupt termination/crash persistence is not implemented.
 4. Extend acquisition/expansion only where justified by real incomplete cases; currently no exhaustive-loading claim is permitted. Network/redirect isolation must be strengthened before exposing browsing to untrusted remote users.
 5. Verify live end-to-end canonical/share messages and finish examples, README and agreed GitHub delivery.
 

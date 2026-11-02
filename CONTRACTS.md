@@ -1,10 +1,10 @@
 # Data contracts
 
-Runtime source of truth: [`src/contracts.mjs`](src/contracts.mjs), using Zod. These define contracts and pure result assembly. `src/acquisition.mjs` now produces validated browser evidence; the LLM Agent and final-result orchestration remain unimplemented.
+Runtime source of truth: [`src/contracts.mjs`](src/contracts.mjs), using Zod. These define contracts and pure result assembly. `src/acquisition.mjs` now produces validated browser evidence; `src/agent.mjs` now orchestrates model field selection, acquisition and contextual continuation selection; `src/model.mjs` projects public OpenAI SDK responses. Live model behavior remains unverified.
 
 ## Request
 
-`parseRequest(message, fields)` validates a natural-language message and a separately selected list of fields. Field selection will come from the model in the Agent milestone; this function does not interpret Chinese field names itself.
+`parseRequest(message, fields)` validates a natural-language message and a separately selected list of fields. Field selection comes from the model in the Agent workflow; this function does not interpret Chinese field names itself.
 
 - Exactly one HTTP(S) URL token; multiple URLs are rejected, even if identical.
 - Public HTTPS Threads host only (`threads.com`, `www.threads.com`, and legacy `.net` equivalents), without credentials or custom port.
@@ -66,7 +66,7 @@ A page being inspected successfully is not an `ok` field. Consumers must only pa
 
 ## Usage
 
-`UsageSchema` supports either nonnegative integer input/output/total tokens, with total equal to input plus output, or `status: unknown` with a reason. Aggregate all model calls in the later orchestration layer. Do not substitute zero when provider usage is absent. Cost accounting is not implemented; token reporting satisfies the planned initial interface.
+`UsageSchema` supports either nonnegative integer input/output/total tokens, with total equal to input plus output, or `status: unknown` with a reason. The Agent aggregates all model calls. Do not substitute zero when provider usage is absent. Cost accounting is not implemented; token reporting satisfies the planned initial interface.
 
 ## Trace
 
@@ -80,7 +80,7 @@ Termination statuses: `completed`, `blocked`, `timeout`, `failed`, `step_limit`.
 
 `completed` describes execution, not complete acquisition; its result status may be `partial`. A model-to-tool invocation can be correlated through call IDs in its recorded public response and the tool event. For this initial contract, request/response are completed call records, not streaming deltas.
 
-The schema checks structure, not secrets. Redaction and public-response projection must happen **before** trace persistence; that implementation is pending. Never serialize raw SDK objects or private reasoning. A strict event object rejects additional top-level fields, but this does not sanitize arbitrary nested JSON.
+The schema checks structure, not secrets. The Agent redacts configured secrets, credential-shaped fields and common bearer/key patterns before trace persistence; the SDK adapter projects only public content and usage. This is not a universal secret detector. Trace persistence covers caught failures, not process crashes or filesystem failures. Never serialize raw SDK objects or private reasoning. A strict event object rejects additional top-level fields, but this does not sanitize arbitrary nested JSON.
 
 ## Validation
 

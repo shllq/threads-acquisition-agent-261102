@@ -7,11 +7,13 @@ import { loadApiKey } from '../src/credentials.mjs';
 
 const readerExchange = JSON.parse(await readFile(new URL('./fixtures/continuation-reader-exchange.json', import.meta.url), 'utf8'));
 const readerBranches = JSON.parse(await readFile(new URL('./fixtures/continuation-reader-branches.json', import.meta.url), 'utf8'));
+const pinnedMessage = JSON.parse(await readFile(new URL('./fixtures/continuation-pinned-message.json', import.meta.url), 'utf8'));
 const multipart = JSON.parse(await readFile(new URL('../examples/multipart/evidence.json', import.meta.url), 'utf8'));
 
 // Opt-in: paid model calls against recorded public evidence, not a browser accuracy test.
 for (const { name, evidence, expected_ids } of [
   { name: 'excludes the observed reader reply', ...readerExchange },
+  { name: 'excludes the later pinned author message and reader replies', ...pinnedMessage },
   { name: 'excludes connector-proven reader branches and unresolved recorded parents', ...readerBranches },
   { name: 'retains the three anonymous multipart continuations without a sequence badge', evidence: multipart,
     expected_ids: ['DfN7KYxkgGn', 'DfN7KarksFD', 'DfN7KalkgFv'] }

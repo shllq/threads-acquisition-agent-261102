@@ -1,0 +1,13 @@
+{
+  "evidence": {
+    "source_url": "https://www.threads.com/@rojiace/post/DfMburZGDEb",
+    "captured_at": "2026-11-02T07:14:50.885Z",
+    "http_status": 200,
+    "conversation_complete": false,
+    "limitations": [
+      "Acquisition failed: [\n  {\n    \"code\": \"custom\",\n    \"path\": [],\n    \"message\": \"Expected a Threads post or share URL.\"\n  }\n]"
+    ],
+    "posts": [],
+    "profile": null
+  }
+}

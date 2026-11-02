@@ -146,6 +146,26 @@ test('HTTP block and navigation timeout return explicit incomplete evidence with
   });
 });
 
+test('invalid post pages never expose recommendations as target evidence', async () => {
+  const invalidUrl = `${origin}/@rojiace/post/DfMburZGDEb`;
+  await withBrowser(async page => {
+    for (const status of [200, 404]) {
+      await serve(page, invalidUrl, conversation, status);
+      const evidence = await acquirePost(page, invalidUrl, options);
+      assert.equal(evidence.http_status, status);
+      assert.deepEqual(evidence.posts, []);
+      assert.equal(evidence.profile, null);
+      assert.equal(evidence.conversation_complete, false);
+      assert.ok(evidence.limitations.some(reason => status === 404 ? /HTTP 404/.test(reason) : /target/.test(reason)));
+    }
+    await serve(page, invalidUrl, `<script>location.replace('${origin}/')</script>`);
+    await serve(page, `${origin}/`, conversation);
+    const redirected = await acquirePost(page, invalidUrl, { ...options, settleMs: 250 });
+    assert.deepEqual(redirected.posts, []);
+    assert.ok(redirected.limitations.some(reason => /Acquisition failed/.test(reason)));
+  });
+});
+
 test('profile reads the display name, not handle or timeline headings, and exact public tooltip count', async () => {
   await withBrowser(async page => {
     await serve(page, profileUrl, profile);

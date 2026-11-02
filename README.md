@@ -1,11 +1,15 @@
 # Threads acquisition Agent
 
+Repository: [shllq/gogolook-test-261102](https://github.com/shllq/gogolook-test-261102) (private; reviewers need repository access).
+
 A bounded CLI Agent selects requested fields with OpenAI, acquires public Threads evidence in anonymous Chromium, and optionally classifies author continuations by context. It preserves source text by evidence ID and writes result JSON plus a sanitized execution trace. The workflow is fixture-tested and live canonical/share CLI runs have been checked. A demonstrated reader-reply classification failure was corrected and passed a three-run recorded-case regression; broader model accuracy remains unverified.
 Requires Node.js 22+ and npm.
 
 ## Run the Agent
 
 ```sh
+git clone https://github.com/shllq/gogolook-test-261102.git
+cd gogolook-test-261102
 npm ci
 npx playwright install chromium
 cp .env.example .env
@@ -116,6 +120,6 @@ Evidence is saved locally in `artifacts/whoscall-initial/` and `artifacts/whosca
 
 `npm test` also validates all 15 nonempty requested-field combinations, missing/uncertain data, follower precision, token totals, evidence identity and trace terminal/error states. The initial browser test uses real Chromium against a local fixture server. Additional synthetic browser fixtures test post boundaries, original rendered text, recommendation exclusion, client-side redirects (including HTTP errors), missing/ambiguous/hidden/conflicting evidence, rounded/exact profile counts, invalid inputs and timeouts. Fixture provenance is documented in `test/fixtures/README.md`. Live network observations are separate from deterministic tests.
 
-The probe/acquisition commands remain evidence tools, separate from the Agent result interface. The Agent now implements model orchestration, contextual continuation selection, aggregate usage and redacted tracing with deterministic fake-provider tests. Live canonical/share and profile-only runs passed the checks documented above; fresh dependency/browser installation was also verified on this Mac. Broad model accuracy, incremental loading, other-machine/OS setup and GitHub delivery remain pending. All CLI browser launches use the shared public-HTTPS egress guard described under Security; it is not an OS-level sandbox or an untrusted remote browsing service. The probe captures public rendered text and links, not browser cookies, headers or storage. Review artifacts before sharing, since public links can still contain tracking parameters.
+The probe/acquisition commands remain evidence tools, separate from the Agent result interface. The Agent now implements model orchestration, contextual continuation selection, aggregate usage and redacted tracing with deterministic fake-provider tests. Live canonical/share and profile-only runs passed the checks documented above; fresh dependency/browser installation was also verified on this Mac. Broad model accuracy, incremental loading and other-machine/OS setup remain unverified. Source and examples are on GitHub; reviewers need access to the private repository. All CLI browser launches use the shared public-HTTPS egress guard described under Security; it is not an OS-level sandbox or an untrusted remote browsing service. The probe captures public rendered text and links, not browser cookies, headers or storage. Review artifacts before sharing, since public links can still contain tracking parameters.
 
 AI assistance was used to write the probe, contracts, structured acquisition, tests and documentation, and to run and interpret the live browser observations.

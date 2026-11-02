@@ -70,7 +70,7 @@ test('browser environment allows OS settings but no credentials or runtime injec
 });
 
 test('trace redaction handles serialized JSON, embedded credential assignments and malformed responses', () => {
-  for (const value of ['{"password":"dummy-password"}', '{"nested":{"api_key":"dummy-password"}}', '{"password":"dummy-password",broken', 'password=dummy-password', 'Cookie: session=dummy-password']) {
+  for (const value of ['{"password":"dummy-password"}', '{"nested":{"api_key":"dummy-password"}}', '{"password":"dummy-password",broken', 'password=dummy-password', 'Cookie: session=dummy-password', 'Bearer dummy-password', 'sk-dummy-password']) {
     assert.ok(!JSON.stringify(redact(value)).includes('dummy-password'), value);
   }
   assert.equal(redact('original post\nunchanged'), 'original post\nunchanged');

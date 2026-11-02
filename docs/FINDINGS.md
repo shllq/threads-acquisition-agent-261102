@@ -4,6 +4,19 @@ Observed on 2026-11-02 with `gpt-4.1-mini`, fresh anonymous Chromium and the gua
 
 See [CLI examples and JSON deliverables](../examples/README.md) for the runnable command, result and trace. See [assignment status](ASSIGNMENT_STATUS.md) for current acceptance gaps.
 
+## 安全檢查：分開模型憑證與瀏覽器內容
+
+**安全重點不是讓模型「答應不洩密」，而是不要把 API Key 交給瀏覽器，也不讓模型直接控制瀏覽器。**
+
+- `model_call` 由 Node.js 的官方 SDK 發送，使用固定 OpenAI HTTPS 端點；金鑰只作為 SDK 驗證身分之用，不加入模型訊息、網頁腳本或工具參數。
+- Chromium 是獨立程序，啟動環境只保留允許的作業系統變數；新建的匿名 `BrowserContext` 另隔離 Cookie／登入狀態。**程序環境隔離金鑰，Context 隔離登入，不能混為一談。**
+- 兩側只透過程式交換任務資料：工具回傳公開證據；模型選擇欄位／合格 ID；程式驗證並組裝原文。模型沒有 Playwright 控制物件、shell 或任意工具執行權。
+- 檢查方式不是只看設定：模擬 SDK 傳輸檢查端點、驗證標頭與本文；真實 Chromium 搭配假金鑰檢查程序環境，並實測內網導航／子資源／重新導向遭阻擋；另驗證 Trace 去敏感。
+
+可重跑 `node --test test/security.test.mjs`，共 10 項安全測試，不需真金鑰或付費 API。資料仍會跨邊界：使用者訊息及續文判斷所需的公開貼文會傳給 OpenAI；這不是完整資料隔離或作業系統沙箱，也不保證免疫提示注入。
+
+詳見[繁體中文安全說明、資料流與驗證表](SECURITY.md)。
+
 ## Checks performed
 
 | Case | Observed result |

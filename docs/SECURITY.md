@@ -1,37 +1,74 @@
-# Security checks
+# 安全檢查與權限邊界
 
-Scope: trusted, single-user local CLI. Commands and code paths are relative to the repository root. Use dummy credentials for checks; never commit raw environment dumps, private sessions or real keys. This is not an OS-level sandbox or a hosted browsing service.
+適用範圍：受信任、單人使用的本機 CLI。以下指令與程式路徑皆以專案根目錄為準。這不是公開瀏覽服務，也不是作業系統層級的沙箱。
 
-## Implemented controls
+## 模型呼叫與瀏覽器隔離
 
-| Review finding | Fix | Verification |
-|---|---|---|
-| SEC-01: endpoint override | Fixed `https://api.openai.com/v1`, redirects rejected, SDK logging off | Mocked transport verifies inherited endpoint/debug settings cannot change destination or expose authentication in the body. |
-| SEC-02: browser key inheritance | All three CLIs use `launchBrowser` with an explicit OS-environment allowlist | Real Chromium process inspection with a dummy key; original fixture workflow still passes. |
-| SEC-03: credential setup | Local Git-ignored `.env`, read directly into memory; injected environment override is consumed and deleted | Temporary-file tests cover quoted keys, missing/empty/unreadable files, environment precedence and no export of file settings. Plaintext storage is an accepted local trade-off. |
-| SEC-04: JSON redaction bypass | Recursive parsing/redaction of serialized JSON; conservative omission of malformed credential-bearing text | Nested JSON, malformed output, credential assignments and bearer/key regression checks. |
-| Browser private-network access | Local CONNECT proxy allows only public IPv4 destinations on port 443, validates all DNS answers and connects to the validated IP | Tests deny private/mixed DNS, metadata, IPv6 and other ports; verify pinned-IP tunneling and real Chromium loopback navigation/redirect/subresource blocking. |
+**`model_call` 是執行紀錄中的事件；`BrowserContext` 是瀏覽器的 Cookie／儲存空間隔離單位，兩者不是同一種安全邊界。** 我們將模型 API 請求留在 Node.js，以獨立 Chromium 程序擷取網頁，再透過經驗證的證據資料連接兩側。
 
-Code: [credentials](../src/credentials.mjs), [model](../src/model.mjs), [trace redaction](../src/agent.mjs), [browser launch](../src/browser.mjs), [egress proxy](../src/network.mjs).
+```text
+本機 CLI／Node.js
+├─ 金鑰讀取 → 官方 OpenAI SDK → 固定 OpenAI HTTPS 端點
+│              └─ 輸出：欄位選擇、續文候選 ID、Token 用量
+│
+├─ Playwright 控制 → 獨立 Chromium 程序
+│                    ├─ 啟動環境：僅保留允許的作業系統變數
+│                    ├─ 全新 BrowserContext：不匯入私人登入狀態
+│                    └─ 公開 HTTPS 代理 → Threads 網頁
+│                         └─ 輸出：公開原文、作者、網址、順序與結構
+│
+└─ 驗證證據與模型輸出 → 來源原文組裝 → result.json／去敏感 trace.json
+```
+
+### 1. 金鑰只交給 Node.js 的模型 SDK
+
+- [`loadApiKey`](../src/credentials.mjs) 從本機 `.env` 讀取 `OPENAI_API_KEY`，不將檔案中的設定匯出至程序環境。若由環境注入金鑰，則優先採用並移除 Node.js 環境中的該變數。
+- [`createModel`](../src/model.mjs) 將金鑰交給 SDK 驗證身分，不加入模型訊息、網頁腳本或工具參數。端點固定為 `https://api.openai.com/v1`，拒絕 HTTP 重新導向，並關閉 SDK 偵錯紀錄。
+- 模型請求由 Node.js SDK 發送，不經過瀏覽器的 `fetch` 或 `page.evaluate`。金鑰仍存在授權 Node.js 程序的記憶體中；移除環境變數不等於抹除記憶體，也不會清除父層 shell 的環境。
+
+### 2. Chromium 不繼承模型憑證，Context 不繼承私人登入
+
+- 三個 CLI 都使用 [`launchBrowser`](../src/browser.mjs)，啟動時以環境變數允許清單取代完整的 `process.env`。模型金鑰、其他憑證及 `NODE_OPTIONS`、`LD_PRELOAD` 等執行期注入設定不會傳給 Chromium。
+- [Agent CLI](../scripts/agent-threads.mjs) 為每次任務建立全新的非持久化 `BrowserContext`，不載入私人 profile、既有 Cookie 或 `storageState`，並封鎖 Service Worker；任務內的貼文與個人檔案擷取共用此匿名 Context，結束後關閉瀏覽器。
+- **不繼承金鑰靠的是程序啟動環境；不繼承登入狀態靠的是新 Context。** 單純建立新 Context，並不能取代憑證隔離。
+
+### 3. 兩側只交換任務資料，不交換金鑰或控制權
+
+- [`runAgent`](../src/agent.mjs) 先驗證單一支援網址，再請模型選欄位；瀏覽器工具只接收程式決定的網址，不接收 SDK 用戶端或金鑰。
+- 續文判斷會將公開貼文證據、結構限制與允許的候選 ID 傳給 OpenAI。因此這是**憑證與能力分離，不是資料完全分離**；使用者訊息與選取的公開內容仍會離開本機。
+- 模型僅回傳經 Zod 驗證的欄位／ID 選擇，不持有 Playwright 控制物件，也不能直接執行 shell、網頁腳本或任意工具。已知讀者分支會先被程式排除，越權選擇則驗證失敗；原文從證據組合，不由模型重寫。
+- 使用者文字與網頁內容被標示為不可信資料，而不是指令。但 Prompt 的提醒不保證免疫提示注入，未知關係仍可能被誤判。
+
+### 4. 瀏覽器連線與執行紀錄另設邊界
+
+- [`網路代理`](../src/network.mjs) 僅允許公開 IPv4 的 443 埠；檢查 DNS 回傳的所有位址，並直接連線至已檢查的 IP，避免檢查後重新解析到私人位址。拒絕內網、loopback、metadata、IPv6 與明文 HTTP；Chromium 另停用直接 DNS、QUIC 與未經代理的 WebRTC UDP。
+- 這是瀏覽器的一般網路流量限制，不是作業系統防火牆；不代表只能連到 Threads，也不能約束已遭入侵的原生程序。
+- 模型金鑰加入去敏感清單後才使用。Trace 僅保留公開模型內容、工具結果與用量，不序列化完整 SDK 物件或私有思考；寫入前遮蔽已知金鑰、憑證欄位、序列化 JSON 與常見 Token 格式。
+
+## 可重跑的安全檢查
 
 ```sh
 node --test test/security.test.mjs
 npm test
 ```
 
-The original endpoint/inheritance/JSON findings were reproduced with dummy secrets before these fixes. During implementation, a live canonical acquisition initially exposed a proxy resolver configuration error; after fixing it, both the post and public profile returned HTTP 200 through the guarded launcher. No live model call or real key was needed.
+專項測試使用假金鑰、模擬 SDK 傳輸及本機測試伺服器；不讀取實際 `.env`、不呼叫付費 API，也不使用私人登入。完整專項共 10 項測試；不把每列控制誤算為單一測試。
 
-## Credential setup
+| 檢查項目 | 驗證方式與預期結果 |
+|---|---|
+| SDK 端點與金鑰位置 | 即使注入其他端點與 debug 設定，請求仍送往固定 OpenAI 端點；假金鑰只出現在驗證標頭，不在請求本文，重新導向設定為拒絕。 |
+| `.env` 與環境覆寫 | 暫存檔測試引號金鑰、缺失／空值／不可讀檔案、環境優先順序；不將檔案設定匯出至環境，也不在錯誤中顯示檔案內容。 |
+| Chromium 環境與程序 | 允許清單排除憑證與執行期注入設定；真實 Chromium 測試在 macOS／Linux 以 `ps` 檢查瀏覽器程序，不含注入的假金鑰。其他平台不宣稱已完成同等程序檢查。 |
+| 瀏覽器內網存取 | 真實 Chromium 嘗試導航、載入子資源及重新導向到 loopback，本機伺服器收到的請求數必須為零。 |
+| DNS 與代理邊界 | 拒絕混合公私網 DNS、內網／metadata／IPv6／非 443 目的地；允許連線時只連已檢查的 IP，不再次解析名稱。 |
+| Trace 去敏感 | 測試巢狀／序列化／損壞 JSON、憑證指派與常見 Token 格式，確認假憑證不出現在輸出，且一般原文不被任意改寫。 |
 
-Generate a **dedicated, restricted project API key**, grant only the needed permissions, and configure provider-side usage limits/alerts. The key is **revocable anytime**; revoke it after testing or immediately if exposed.
+測試程式：[test/security.test.mjs](../test/security.test.mjs)。以上是各控制的可重現檢查，不是完整滲透測試，也不是「模型與瀏覽器永不洩漏」的證明。
 
-Copy `.env.example` to `.env`, set owner-only permissions (`chmod 600 .env` on macOS/Linux), then enter the key using a local editor. Do not put it in a shell command. The CLI reads only `OPENAI_API_KEY` from `.env` in its working directory without exporting file values. `.env` variants are Git-ignored; only the empty `.env.example` is tracked. This is plaintext storage, not encryption: keep the file out of shared folders, logs and published artifacts. Keychain is no longer used.
+## 操作者仍需確認
 
-For CI, an injected `OPENAI_API_KEY` takes precedence over `.env` and is removed from Node's environment after loading. Neither source is passed to Chromium. Removing it does not erase an ancestor shell's environment; avoid shell-wide exports. The SDK client is reused for the run.
-
-## Remaining operator checks and limits
-
-- [ ] Verify provider permissions and usage controls for your own dedicated project key. Live authentication was exercised locally after the original security checkpoint; it does not verify another operator's setup.
-- [ ] Review actual result/trace artifacts before publishing. Arbitrary unlabelled or encoded secrets are not universally detectable; source text is not rewritten by trace sanitization.
-- IPv6-only destinations and plain HTTP resources are intentionally unavailable. Chromium uses the proxy for normal network traffic, with direct DNS/QUIC/non-proxied WebRTC UDP disabled. This is application-level egress restriction, not containment of a compromised native process.
-- Keys exist in plaintext in `.env` and in authorized Node memory. File permissions do not protect against malicious code/dependencies running as the same user. There is no private login import, public multi-user service, crash-recoverable trace or comprehensive secret scanner.
+- 使用**專用、限制權限且可隨時撤銷**的 API Key，設定供應商端用量限制與告警；測試完畢或疑似外洩時撤銷。
+- 複製 `.env.example` 為 `.env`，於本機編輯器填入金鑰，macOS／Linux 設定 `chmod 600 .env`。不要把真金鑰放在指令、使用者訊息、共用資料夾或提交內容中。
+- `.env` 是 Git 忽略的**明文檔案**，不是加密儲存。檔案權限與新 Context 無法阻止同一帳號下的惡意程式或依賴讀取檔案／記憶體；本機 CLI 仍是受信任的執行環境。
+- 審閱結果與紀錄後再分享：去敏感機制無法辨識所有未標記、編碼或藏在公開原文中的秘密。來源原文不會為了去敏感而全面重寫。
+- 實際模型驗證已在本機執行，但不代表其他人的金鑰權限、供應商用量設定或作業系統已驗證。正常完成與捕捉到錯誤時會保存 Trace，不保證強制終止或檔案系統故障後仍能保存。

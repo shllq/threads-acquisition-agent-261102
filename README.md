@@ -1,6 +1,6 @@
 # Threads acquisition Agent
 
-A bounded CLI Agent selects requested fields with OpenAI, acquires public Threads evidence in anonymous Chromium, and optionally classifies author continuations by context. It preserves source text by evidence ID and writes result JSON plus a sanitized execution trace. The workflow is fixture-tested; live model accuracy and end-to-end acceptance remain unverified.
+A bounded CLI Agent selects requested fields with OpenAI, acquires public Threads evidence in anonymous Chromium, and optionally classifies author continuations by context. It preserves source text by evidence ID and writes result JSON plus a sanitized execution trace. The workflow is fixture-tested and live canonical/share CLI runs have been checked. A demonstrated reader-reply classification failure was corrected and passed a three-run recorded-case regression; broader model accuracy remains unverified.
 Requires Node.js 22+ and npm.
 
 ## Run the Agent
@@ -30,7 +30,7 @@ make test
 
 For the npm command, quote the entire message as one argument; the optional second argument is the output directory. stdout contains result JSON; `result.json` and `trace.json` are written there. Failures save an error object and terminal trace and exit nonzero; wholly unavailable data also exits nonzero. Partial/uncertain results exit zero and must be interpreted by their field statuses. Missing credentials fail before browsing.
 
-The official OpenAI SDK makes at most two calls: requested-field selection and, only when requested and a target exists, contextual continuation selection. Calls have a 30-second SDK timeout, no automatic retries and a 2,000-output-token cap. Browser acquisition is bounded independently. Only the author's requested profile fields trigger profile acquisition. Model selections must reference eligible same-author evidence IDs; output text comes directly from evidence in observed order, never model-written text. Contextual classification can still be wrong: no live model evaluation has been performed. Post text is conservatively partial (no expansion proof); continuations are partial or uncertain, never claimed exhaustive.
+The official OpenAI SDK makes at most two calls: requested-field selection and, only when requested and a target exists, contextual continuation selection. Calls have a 30-second SDK timeout, no automatic retries and a 2,000-output-token cap. Browser acquisition is bounded independently. Only the author's requested profile fields trigger profile acquisition. Model selections must reference eligible same-author evidence IDs; output text comes directly from evidence in observed order, never model-written text. Contextual classification can still be wrong: the revised prompt passed one recorded reader-reply case in three live-model runs, not a broad accuracy benchmark. Post text is conservatively partial (no expansion proof); continuations are partial or uncertain, never claimed exhaustive.
 
 Traces contain public model/tool calls, per-call usage and terminal status, not private reasoning. Total usage is summed; missing usage stays unknown. Review artifacts before sharing. Traces persist on completion or caught failure, not after hard crashes or filesystem errors.
 
@@ -42,7 +42,19 @@ Traces contain public model/tool calls, per-call usage and terminal status, not 
 - Browser traffic uses a public-IPv4/HTTPS-port-only proxy with checked, pinned destination IPs. Private/loopback/metadata addresses, HTTP and IPv6 are blocked, including redirects/subresources; IPv6-only sites are unsupported.
 - Traces redact configured keys and credential fields, including serialized JSON. Redaction is not a universal secret detector: review artifacts before sharing and use a dedicated, least-privilege provider key.
 
-This remains a trusted local CLI, not an OS-level network sandbox or public service. Live model authentication still needs operator verification. See [security checks](security-checks/README.md).
+This remains a trusted local CLI, not an OS-level network sandbox or public service. Live provider authentication was verified locally; each operator still needs their own restricted key. See [security checks](security-checks/README.md).
+
+## Verified examples
+
+See [live CLI examples and acceptance checks](examples/README.md), including committed [result JSON](examples/share/result.json) and [trace JSON](examples/share/trace.json). The share example retains the genuine continuation and excludes the author's response to a reader. Canonical/all-fields and profile-name-only requests were also checked live.
+
+The paid regression is opt-in and uses recorded public evidence (no browser):
+
+```sh
+RUN_LIVE_MODEL=1 node --test test/live-continuations.test.mjs
+```
+
+It runs three two-call workflows and saves sanitized local artifacts. Ordinary `npm test` skips it. A clean temporary dependency install and offline suite passed on this machine, using the existing Playwright browser cache; a new-machine browser installation has not been verified.
 
 ## Project planning
 
@@ -104,6 +116,6 @@ Evidence is saved locally in `artifacts/whoscall-initial/` and `artifacts/whosca
 
 `npm test` also validates all 15 nonempty requested-field combinations, missing/uncertain data, follower precision, token totals, evidence identity and trace terminal/error states. The initial browser test uses real Chromium against a local fixture server. Additional synthetic browser fixtures test post boundaries, original rendered text, recommendation exclusion, client-side redirects (including HTTP errors), missing/ambiguous/hidden/conflicting evidence, rounded/exact profile counts, invalid inputs and timeouts. Fixture provenance is documented in `test/fixtures/README.md`. Live network observations are separate from deterministic tests.
 
-The probe/acquisition commands remain evidence tools, separate from the Agent result interface. The Agent now implements model orchestration, contextual continuation selection, aggregate usage and redacted tracing with deterministic fake-provider tests. Live model accuracy, incremental loading, clean-install verification and GitHub delivery remain pending. All CLI browser launches use the shared public-HTTPS egress guard described under Security; it is not an OS-level sandbox or an untrusted remote browsing service. The probe captures public rendered text and links, not browser cookies, headers or storage. Review artifacts before sharing, since public links can still contain tracking parameters.
+The probe/acquisition commands remain evidence tools, separate from the Agent result interface. The Agent now implements model orchestration, contextual continuation selection, aggregate usage and redacted tracing with deterministic fake-provider tests. Live canonical/share and profile-only runs passed the checks documented above; broad model accuracy, incremental loading, new-machine browser setup and GitHub delivery remain pending. All CLI browser launches use the shared public-HTTPS egress guard described under Security; it is not an OS-level sandbox or an untrusted remote browsing service. The probe captures public rendered text and links, not browser cookies, headers or storage. Review artifacts before sharing, since public links can still contain tracking parameters.
 
 AI assistance was used to write the probe, contracts, structured acquisition, tests and documentation, and to run and interpret the live browser observations.

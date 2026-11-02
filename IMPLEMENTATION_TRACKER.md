@@ -10,12 +10,12 @@ Status describes verified implementation, not proposed features. Update this fil
 
 | Milestone | Status | Evidence / remaining work |
 |---|---|---|
-| M1 Anonymous-browser feasibility | Initial probe complete | Supplied canonical post and profile returned HTTP 200; fresh Chromium contexts; JSON and screenshots saved locally. Share URL and broader conversation structures remain unverified. |
+| M1 Anonymous-browser feasibility | Initial probe complete | Supplied canonical post and profile returned HTTP 200; fresh Chromium contexts; JSON and screenshots saved locally. Share URL subsequently verified in M3 and live CLI acceptance; broader conversation structures remain unevaluated. |
 | M2 Contracts and validation | Implemented and fixture-tested | Zod request/evidence/result/usage/trace contracts and pure result assembly; field-selection and uncertainty tests. See `CONTRACTS.md`. Probe JSON remains separate from the result schema. |
 | M3 Structural acquisition | Initial structural path implemented and verified | Separate post/profile evidence; recommendation exclusion; canonical/share live checks; fresh contexts. Reply relationships remain unknown, completeness false, and additional loading/expansion is not implemented. |
-| M4 End-to-end Agent | Implemented; deterministic workflow tested | Natural-language CLI, official OpenAI SDK, bounded tool orchestration and result assembly. Live model run pending API key. |
-| M5 Continuations and tracing | Initial implementation; live accuracy unverified | Model selects continuation evidence IDs by context; source text/order preserved; total usage and sanitized traces persisted, including failures. No crash recovery. |
-| M6 Delivery | Partial documentation only | Probe README exists. Final examples, clean-install verification and GitHub delivery pending. |
+| M4 End-to-end Agent | Implemented; deterministic workflow tested | Natural-language CLI, SDK, bounded tools and result assembly; live canonical/share all-fields and profile-name-only requests verified. |
+| M5 Continuations and tracing | Narrow live regression passed | Reader-reply failure reproduced, prompt corrected, three recorded-case model runs and fresh share run passed. Source text/order, usage and sanitized traces verified. Broad accuracy and crash recovery remain open. |
+| M6 Delivery | Examples and local clean-install check complete; publication pending | Sanitized share result/trace and live-check summary under `examples/`. Temporary `npm ci` and offline suite passed using cached browsers. No remote or new-machine browser-install check. |
 
 ## Completed implementation
 
@@ -58,7 +58,7 @@ Profile: https://www.threads.com/@whoscall_tw
 M3 live acquisition:
 
 - Canonical URL: HTTP 200, two conversation nodes, recommendations excluded.
-- Assignment share URL `https://www.threads.com/share/GW3EPb5M8/`: HTTP 200, resolved to `/@whoscall_tw/post/Dd0_RGwH4K7` (with a tracking query), four conversation nodes. Includes both an author continuation candidate and a reader/author exchange; classification is pending.
+- Assignment share URL `https://www.threads.com/share/GW3EPb5M8/`: HTTP 200, resolved to `/@whoscall_tw/post/Dd0_RGwH4K7` (with a tracking query), four conversation nodes. Includes both an author continuation candidate and a reader/author exchange; the later live acceptance checks correctly excluded the reader reply after the prompt fix.
 - All parent IDs remain null and conversation completeness false. No additional loading or content expansion attempted.
 
 Local evidence (ignored by Git, not guaranteed to accompany a clone):
@@ -81,17 +81,17 @@ Local evidence (ignored by Git, not guaranteed to accompany a clone):
 | Live post probe | HTTP 200; evidence captured. |
 | Live profile probe | HTTP 200; evidence captured. |
 | Screenshot inspection | Sign-in overlay observed. |
-| LLM/model usage | Not applicable yet: no model calls. |
+| LLM/model usage | Live `gpt-4.1-mini`: canonical/share all-fields and profile-only runs passed; usage 821/872/120 tokens. |
 | crapper / dryer / mutator | Not run: not installed. |
-| End-to-end assignment acceptance | Not yet verified. |
+| End-to-end assignment acceptance | Three live CLI cases checked; one classification regression passed in three model runs. Broader accuracy, exhaustive extraction and publication not established. |
+| Current offline suite | 49 pass, 1 paid live test skipped by default; clean temporary dependency install also passed. |
 
 ## Next steps
 
-1. Set a dedicated restricted/revocable key in local `.env` (or inject `OPENAI_API_KEY` for CI) and run the natural-language CLI against canonical/share inputs. Current total: 48 passing tests; live model behavior is not verified.
-2. Manually evaluate continuation selection against genuine continuations and reader/author exchanges; record classification errors rather than equating fake-provider tests with model accuracy.
-3. Publish sanitized successful result/trace examples. The no-key CLI failure path has been exercised locally; abrupt termination/crash persistence is not implemented.
-4. Extend acquisition/expansion only where justified by real incomplete cases; currently no exhaustive-loading claim is permitted. CLI browser egress is now restricted to DNS-pinned public IPv4 on port 443; it remains application-level protection, not a hosted-service/OS sandbox.
-5. Verify live end-to-end canonical/share messages and finish examples, README and agreed GitHub delivery.
+1. Configure the agreed GitHub remote and publish reviewed code/examples. No destination is currently configured.
+2. Broaden continuation evaluation if time permits. The recorded share case reproduced the old prompt's false-positive apology; the revised prompt excluded it in three model runs and a fresh live share run. See `examples/README.md`; this is not a broad accuracy benchmark.
+3. Verify browser installation on a new machine if required. Clean temporary `npm ci` and 49 offline tests passed here, but reused the existing Playwright browser cache. The paid live test is opt-in and skipped by default.
+4. Extend acquisition/expansion only for demonstrated incomplete cases; no exhaustive-loading claim is permitted. CLI egress remains application-level public-HTTPS protection, not an OS sandbox. Abrupt termination/crash persistence remains unimplemented.
 
 ## Repository state at planning checkpoint
 

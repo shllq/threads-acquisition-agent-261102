@@ -1,0 +1,61 @@
+{
+  "evidence": {
+    "source_url": "https://www.threads.com/@whoscall_tw/post/Dd0_RGwH4K7",
+    "captured_at": "2026-11-02T04:34:31.857Z",
+    "http_status": 200,
+    "conversation_complete": false,
+    "limitations": [
+      "Post https://www.threads.com/@zh._.930/post/De4WOU4E6h5 has no unambiguous text block; skipped.",
+      "Post https://www.threads.com/@shikanoko_61015/post/DewRXx4E6pg has no unambiguous text block; skipped.",
+      "Public rendered view only; conversation completeness and parent/reply relationships are not confirmed.",
+      "Rendered text may be truncated; no expansion or additional loading was attempted.",
+      "A login/sign-in prompt is present; no login or access-limit bypass was attempted."
+    ],
+    "posts": [
+      {
+        "id": "Dd0_RGwH4K7",
+        "url": "https://www.threads.com/@whoscall_tw/post/Dd0_RGwH4K7",
+        "author": "whoscall_tw",
+        "text": "雖然明天要上班了\n但給大家一個好消息\n我們又要抽 iPhone ㄌ\niPhone 18 Pro喔",
+        "position": 0,
+        "parent_id": null,
+        "author_marker": false,
+        "is_recommendation": false
+      },
+      {
+        "id": "Dd0_RHRH6h9",
+        "url": "https://www.threads.com/@whoscall_tw/post/Dd0_RHRH6h9",
+        "author": "whoscall_tw",
+        "text": "這邊了解活動詳情👉🏻 whoscalltw.pse.is/9p2dw…",
+        "position": 1,
+        "parent_id": null,
+        "author_marker": true,
+        "is_recommendation": false
+      },
+      {
+        "id": "Dd7ngduk3ld",
+        "url": "https://www.threads.com/@petswuuuu/post/Dd7ngduk3ld",
+        "author": "petswuuuu",
+        "text": "為什麼顯示這樣？🥺",
+        "position": 2,
+        "parent_id": null,
+        "author_marker": false,
+        "is_recommendation": false
+      },
+      {
+        "id": "Dd8sq8MH9pJ",
+        "url": "https://www.threads.com/@whoscall_tw/post/Dd8sq8MH9pJ",
+        "author": "whoscall_tw",
+        "text": "非常不好意思這個目前已經修復了🙇🙇",
+        "position": 3,
+        "parent_id": null,
+        "author_marker": true,
+        "is_recommendation": false
+      }
+    ],
+    "profile": null
+  },
+  "expected_ids": [
+    "Dd0_RHRH6h9"
+  ]
+}

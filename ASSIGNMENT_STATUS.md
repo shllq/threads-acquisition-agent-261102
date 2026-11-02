@@ -8,20 +8,20 @@
 shasum -a 256 -c init_assignment.sha256
 ```
 
-Plans, schemas and milestone labels do not amend the assignment. This report is a manual snapshot through the initial M4/M5 implementation, not an automatic conformance guarantee.
+Plans, schemas and milestone labels do not amend the assignment. This report is a manual snapshot through live canonical/share acceptance checks and the reader-reply regression fix, not an automatic conformance guarantee.
 
 ## Overall verdict
 
-**Implemented vertical workflow; not yet delivery-ready or live-model verified.** The CLI accepts the assignment-style message, selects fields using OpenAI, calls existing anonymous browser tools, optionally classifies continuations from conversation context, and emits source-backed JSON plus sanitized execution logs. Deterministic fake-provider tests establish orchestration behavior, not actual model classification accuracy. No configured API key was available for a live model run.
+**Implemented and checked live on canonical/share inputs; GitHub delivery and broader accuracy evaluation remain open.** The CLI selects requested fields, acquires anonymous browser evidence, classifies continuations, and emits source-backed JSON plus sanitized traces. An existing live share artifact exposed a reader reply misclassified as a continuation. The old prompt reproduced that failure; the revised prompt passed three recorded-case model runs and a fresh live share run. This is narrow regression evidence, not a general accuracy guarantee.
 
 ## Feature requirements
 
 | ID | Requirement | Implementation / remaining acceptance gap |
 |---|---|---|
-| F1 | Display name, followers, original post and author continuations; requested combinations | CLI model field selection, conditional profile acquisition and exact field projection implemented. All 15 combinations are contract-tested; natural-language interpretation still needs live evaluation. |
-| F2 | Canonical and share URLs, one per task | Deterministic route/cardinality validation before model/browser access. Both acquisition paths previously returned HTTP 200 live; complete model-driven runs pending. |
-| F3 | Original text/order; exclude readers, author-reader replies and recommendations | Model selects evidence IDs; deterministic assembly preserves text and observed order and rejects root, reader, recommendation, preceding or unknown IDs. Recommendations already filtered structurally. Semantic exclusion of author-reader replies depends on model accuracy and remains unverified live. No expansion/truncation proof; post content remains partial. |
-| F4 | Contextual distinction of continuations vs author-reader replies | Classifier receives conversation context and explicit instructions that same author/marker/adjacency are insufficient. Uncertainty retained; continuations never claimed exhaustive. Fake-provider tests cannot establish semantic accuracy. |
+| F1 | Display name, followers, original post and author continuations; requested combinations | CLI model field selection, conditional profile acquisition and exact field projection implemented. All 15 combinations are contract-tested; all-fields and profile-name-only messages were also verified live. |
+| F2 | Canonical and share URLs, one per task | Deterministic route/cardinality validation before model/browser access. Both canonical and share model-driven CLI paths completed live with source-backed partial results. |
+| F3 | Original text/order; exclude readers, author-reader replies and recommendations | Model selects evidence IDs; deterministic assembly preserves text and observed order and rejects root, reader, recommendation, preceding or unknown IDs. Recommendations already filtered structurally. The revised prompt excluded the observed reader-response apology in three recorded-case model runs and a fresh live share run; other conversations remain unevaluated. No expansion/truncation proof; post content remains partial. |
+| F4 | Contextual distinction of continuations vs author-reader replies | Classifier receives conversation context and explicit instructions that same author/marker/adjacency are insufficient. Uncertainty retained; continuations never claimed exhaustive. A reader-response failure was reproduced and corrected on one observed conversation; fake-provider tests and this narrow live regression cannot establish general semantic accuracy. |
 | F5 | Source URL, extraction time, task tokens or cost | Result includes input/resolved URL, observation timestamp and aggregate tokens across all model calls. Missing provider usage is unknown, never synthetic zero. Cost reporting not needed when tokens are available. |
 | F6 | Explain inaccessible/incomplete/uncertain data; no fabrication | Browser limitations propagated for observed post/continuations; missing fields unavailable, ambiguous/empty continuation selection uncertain. Failed workflow returns error JSON rather than fabricated result. |
 | F7 | Model/tool calls, results, terminal state; sanitized credentials, no private reasoning | CLI persists trace JSON for normal and caught-error paths. Public SDK content only; configured key, credential-shaped fields and common token patterns redacted. No universal arbitrary-secret guarantee or crash/interruption recovery; review artifacts before sharing. |
@@ -35,23 +35,26 @@ Plans, schemas and milestone labels do not amend the assignment. This report is 
 
 | ID | Status / remaining work |
 |---|---|
-| D1 GitHub source/dependencies/setup | Lockfile and browser/model/CLI instructions exist. No remote configured, published repository link or clean-install verification. |
-| D2 CLI examples/result/log | README has runnable original-style message. Ignored local no-key failure artifacts exist; sanitized successful result/trace examples still pending. |
-| D3 README | Design, setup, validation, limitations and AI assistance documented. Update with actual live model findings before delivery. |
+| D1 GitHub source/dependencies/setup | Lockfile and setup instructions exist. A clean temporary `npm ci` and offline suite passed using the existing browser cache. No remote, published link or new-machine browser-install check. |
+| D2 CLI examples/result/log | README has runnable original-style message; sanitized successful share result/trace JSON and an acceptance summary are committed under `examples/`. |
+| D3 README | Design, setup, validation, limitations, AI assistance and actual live model findings documented. |
 | D4 JSON terminal/file | CLI writes result to stdout and `result.json`, trace to `trace.json`; errors use an error object and nonzero exit. |
 
 ## Verification
 
-- **48 tests pass:** 27 contract/browser tests, 9 Agent/SDK tests, 10 security tests and 2 Make shortcut tests. Includes a complete fake-provider workflow through guarded Chromium, endpoint/credential/redaction checks and private-network denial.
+- **49 offline tests pass; one paid regression test is skipped by default:** 27 contract/browser tests, 9 Agent/SDK tests, 10 security tests, 2 Make shortcut tests and 1 published-example test. Includes a complete fake-provider workflow through guarded Chromium, endpoint/credential/redaction checks and private-network denial.
 - Test-first Agent run failed on the missing module before implementation.
 - Agent tests cover source-backed selection/order, rejection of invalid IDs, profile-only projection, ambiguous empty continuations, missing evidence/usage, failed-call terminal traces and credential redaction.
 - SDK fake-client test verifies public content/usage projection and truncated-response rejection.
 - CLI without credentials exited nonzero and persisted a failed model event plus terminal state in `artifacts/m4-no-key/` (ignored).
 - Prior canonical/share browser acquisitions succeeded live; the recommendation flag was additionally verified on the real canonical page before M4.
-- **No live model call, model accuracy evaluation, full successful CLI acceptance, crash-recovery validation or GitHub delivery yet.**
+- Fresh live canonical/share all-fields runs completed with partial results (821/872 tokens); profile-name-only returned exactly that field (120 tokens).
+- The old classifier selected a reader reply on the recorded share case. The revised prompt passed three independent model runs and fresh live share acquisition; see `examples/README.md` for scope and evidence.
+- Clean temporary dependency installation and the offline suite passed; browser binaries came from the existing machine cache.
+- **No broad model-accuracy benchmark, new-machine browser setup, crash-recovery validation or GitHub delivery yet.**
 
 ## Next
 
-1. Set a dedicated restricted/revocable key in local `.env` (or inject `OPENAI_API_KEY` for CI); run canonical/share natural-language cases and manually check continuation decisions.
-2. Keep partial/uncertain statuses where evidence is incomplete; fix only demonstrated acquisition/classification gaps.
-3. Save sanitized successful output/trace examples, verify clean setup and publish to the agreed GitHub destination.
+1. Agree on the GitHub destination, configure a remote and publish the reviewed source/examples.
+2. If more evaluation time is available, test additional genuine-continuation and reader-reply conversations; the current regression covers only one failure case.
+3. Keep partial/uncertain statuses where evidence is incomplete. New-machine browser installation remains unchecked; do not claim exhaustive extraction.

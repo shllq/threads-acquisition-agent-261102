@@ -1,6 +1,6 @@
 # Data contracts
 
-Runtime source of truth: [`src/contracts.mjs`](../src/contracts.mjs), using Zod. These define contracts and pure result assembly. `src/acquisition.mjs` now produces validated browser evidence; `src/agent.mjs` now orchestrates model field selection, acquisition and contextual continuation selection; `src/model.mjs` projects public OpenAI SDK responses. Live canonical/share/multipart workflows and three recorded-case model regressions have been checked; broad model accuracy remains unverified.
+Runtime source of truth: [`src/contracts.mjs`](../src/contracts.mjs), using Zod. These define contracts and pure result assembly. `src/acquisition.mjs` now produces validated browser evidence; `src/agent.mjs` now orchestrates model field selection, acquisition and contextual continuation selection; `src/model.mjs` projects public OpenAI SDK responses. See the [current verification summary](../README.md#驗證與已知限制) for checked workflows and remaining evaluation limits.
 
 ## Request
 
@@ -78,7 +78,7 @@ A page being inspected successfully is not an `ok` field. Consumers must only pa
 
 Termination statuses: `completed`, `blocked`, `timeout`, `failed`, `step_limit`. Unsuccessful termination needs a reason. Failed calls need an error; successful calls must have null error. Event IDs must be unique and exactly one terminal event must occur last.
 
-`completed` describes execution, not complete acquisition; its result status may be `partial`. A model-to-tool invocation can be correlated through call IDs in its recorded public response and the tool event. For this initial contract, request/response are completed call records, not streaming deltas.
+`completed` describes execution, not complete acquisition; its result status may be `partial`. The program invokes tools in a fixed workflow, not through model-generated tool calls. Each `call_id` identifies a single call; it is not a shared model-to-tool correlation ID. Within one `run_id`, follow event order, tool names, request URLs and evidence IDs to trace the workflow. Request/response are completed call records, not streaming deltas.
 
 The schema checks structure, not secrets. The Agent redacts configured secrets, credential-shaped fields (including serialized JSON) and common bearer/key patterns before trace persistence; malformed credential-bearing text is conservatively omitted. The SDK adapter projects only public content and usage. This is not a universal secret detector. Trace persistence covers caught failures, not process crashes or filesystem failures. Never serialize raw SDK objects or private reasoning. A strict event object rejects additional top-level fields, but this does not sanitize arbitrary nested JSON.
 

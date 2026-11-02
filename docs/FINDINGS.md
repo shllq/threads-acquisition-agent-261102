@@ -19,6 +19,8 @@ See [CLI examples and JSON deliverables](../examples/README.md) for the runnable
 
 ## Checks performed
 
+The CLI rows below retain earlier acquisition checkpoints. For the latest six-case CLI results and token totals, see the [published regression evidence](../examples/README.md#cli-回歸用量與審閱證據); do not combine tokens from different runs.
+
 | Case | Observed result |
 |---|---|
 | Share URL, all fields | Selected `Dd0_RHRH6h9`; excluded reader reply `Dd8sq8MH9pJ`; partial, 872 tokens. |
@@ -27,11 +29,12 @@ See [CLI examples and JSON deliverables](../examples/README.md) for the runnable
 | Recorded share conversation, three independent model runs | All selected only `Dd0_RHRH6h9`, excluding the reader-response apology. |
 | Recorded anonymous `@wheretogo_blue` conversation, three independent model runs | All selected `DfN7KYxkgGn`, `DfN7KarksFD`, `DfN7KalkgFv` in order, preserving source text and partial status without sequence badges. |
 | Recorded `@tai_wan_lan` connector evidence, three independent model runs | Selected only `DU0gvTyk830`, `DU0iKvbE2Zj`; reader branches and a recorded missing parent were ineligible. |
+| Recorded `@kasumitoiu` conversation, three independent model runs | Retained `DP1T6jKkwch`, `DP1T6-9k4Gp`, `DP1T7ehE9J0`, `DP1T8A2k03k` in order; excluded the later author message `DP26N4WE_4B` and reader replies. “Pinned” comes from the supplied case description, not captured pin metadata; see [fixture provenance](../test/fixtures/README.md#edge-cases-collected-from-notesmd). |
 | Fresh live CLI after connector extraction | `@tai_wan_lan` retained two continuations (1,891 tokens); `@wheretogo_blue` retained three (2,460 tokens); share URL retained one (921 tokens). All results partial. |
 
 Manual comparison against the acquired conversation confirms the share author apology follows and answers the reader's question, while the activity-details link adds to the original announcement. The canonical continuation expands the root's phone-number explanation. Text was compared to tool evidence, not independently verified as untruncated by the website.
 
-The old prompt failed this same recorded case before the change: it selected the apology as a continuation based on authorship/topic. The revised prompt explicitly checks reader context and omits ambiguous candidates. Three passes per conversation on these three recorded cases are regression checks, not a classification-accuracy benchmark. The share link remains visibly truncated (`…`); no expansion or exhaustive-loading claim is made.
+The old prompt failed this same recorded case before the change: it selected the apology as a continuation based on authorship/topic. The revised prompt explicitly checks reader context and omits ambiguous candidates. Three passes per conversation on these four recorded cases are regression checks, not a classification-accuracy benchmark. The share link remains visibly truncated (`…`); no expansion or exhaustive-loading claim is made.
 
 Raw local runs are ignored under `artifacts/acceptance-{share-fixed,canonical-fixed,profile-only}/`; they are not required to use this committed example.
 
@@ -41,7 +44,7 @@ Rerun the paid, opt-in regression with local `.env` configured:
 RUN_LIVE_MODEL=1 node --test test/live-continuations.test.mjs
 ```
 
-This makes up to eighteen model calls (three full two-call workflows per case) against three recorded conversations, does not browse, and saves result/trace files under a fresh `artifacts/eval-continuations-*` directory per case. Each case stops on its first failed assertion. Ordinary `npm test` skips it and requires no API key.
+This makes up to 24 model calls (4 recorded conversations × 3 workflows × 2 calls), does not browse, and saves result/trace files under a fresh `artifacts/eval-continuations-*` directory per case. Each case stops on its first failed assertion. Ordinary `npm test` skips it and requires no API key.
 
 ## Multipart badge investigation: `@wheretogo_blue`
 

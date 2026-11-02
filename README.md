@@ -1,11 +1,12 @@
-# Threads acquisition Agent
+# Threads Acquisition Agent
 
-Repository: [shllq/gogolook-test-261102](https://github.com/shllq/gogolook-test-261102) (private; reviewers need repository access).
+A CLI Agent that reads one Threads post URL and the fields you ask for, then returns source-backed JSON. Supports canonical and share URLs, preserves original text and order, and reports incomplete or uncertain data instead of inventing it.
 
-A bounded CLI Agent selects requested fields with OpenAI, acquires public Threads evidence in anonymous Chromium, and optionally classifies author continuations by context. It preserves source text by evidence ID and writes result JSON plus a sanitized execution trace. The workflow is fixture-tested and live canonical/share CLI runs have been checked. A demonstrated reader-reply classification failure was corrected and passed a three-run recorded-case regression; broader model accuracy remains unverified.
-Requires Node.js 22+ and npm.
+[GitHub repository](https://github.com/shllq/gogolook-test-261102) · **Private: reviewers need access.**
 
-## Run the Agent
+## Quick start
+
+Requires **Node.js 22+**, npm, and an OpenAI API key. Chromium runs in a fresh anonymous context—no personal account, cookies, or existing browser session.
 
 ```sh
 git clone https://github.com/shllq/gogolook-test-261102.git
@@ -13,113 +14,62 @@ cd gogolook-test-261102
 npm ci
 npx playwright install chromium
 cp .env.example .env
-chmod 600 .env # macOS/Linux: owner read/write only.
-# Edit .env locally and set OPENAI_API_KEY. Do not paste the key into shell commands.
-export OPENAI_MODEL='gpt-4.1-mini' # Optional; this is the default.
+chmod 600 .env
+```
+
+Edit `.env` locally and set `OPENAI_API_KEY` to a dedicated, restricted key. Keep it private; `.env` is Git-ignored. The default model is `gpt-4.1-mini`; optionally override it with `OPENAI_MODEL`.
+
+Run the assignment example:
+
+```sh
 npm run --silent agent -- '請取得這篇 Threads 作者的個人檔案名稱、追蹤者數量、貼文內容及續文：https://www.threads.com/share/GW3EPb5M8/' artifacts/my-run
 ```
 
-### Make shortcuts
+Quote the whole message. The output directory is optional. To request fewer fields, change the message—for example, `只要作者的個人檔案名稱：https://www.threads.com/@whoscall_tw/post/De6Yqf8nxuz`.
 
-With `.env` configured, run from the repository root:
+## Output
 
-```sh
-make agent https://www.threads.com/@faustforgame/post/DfN8AZNkm-I
-make acquire https://www.threads.com/@faustforgame/post/DfN8AZNkm-I
-make probe https://www.threads.com/@faustforgame/post/DfN8AZNkm-I
-make test
-```
+| Requested field | JSON key |
+|---|---|
+| Profile display name | `profile_name` |
+| Follower count | `follower_count` |
+| Original post text | `post_content` |
+| Author continuations | `author_continuations` |
 
-`make agent` requests all four assignment fields. Each run creates `artifacts/<stage>-YYYYMMDD-HHMMSS/` using the command as the stage and local time, for example `artifacts/agent-20261102-143045/`. Existing directories are never reused: a same-command collision within one second fails rather than overwriting a run. For URLs containing `=`, use `make agent URL='https://www.threads.com/share/EXAMPLE/?x=1'` because make treats arguments containing `=` as variable assignments. For share URLs ending in `/`, also use `URL='https://www.threads.com/share/EXAMPLE/'` or the npm command: the positional Make form can report a missing-goal error after the Agent has completed. Use the npm command above for custom field-selection messages.
+Only requested fields are returned. Results include source URLs, extraction time, aggregate token usage, and per-field status/reasons.
 
-For the npm command, quote the entire message as one argument; the optional second argument is the output directory. stdout contains result JSON; `result.json` and `trace.json` are written there. Failures save an error object and terminal trace and exit nonzero; wholly unavailable data also exits nonzero. Partial/uncertain results exit zero and must be interpreted by their field statuses. Missing credentials fail before browsing.
+- **stdout / `result.json`:** extracted data or an error object. [Actual result example](examples/share/result.json).
+- **`trace.json`:** model/tool requests, responses, usage, and terminal state—not private model reasoning. [Actual trace example](examples/share/trace.json).
 
-The official OpenAI SDK makes at most two calls: requested-field selection and, only when requested and a target exists, contextual continuation selection. Calls have a 30-second SDK timeout, no automatic retries and a 2,000-output-token cap. Browser acquisition is bounded independently. Only the author's requested profile fields trigger profile acquisition. Model selections must reference eligible same-author evidence IDs; output text comes directly from evidence in observed order, never model-written text. The tool records recognized connector parents; deterministic eligibility rejects reader ancestry and recorded missing/invalid parents before classification, and rejects any ineligible model selection. Unknown ancestry still needs model context. Three recorded cases passed three model runs each; this is not a broad accuracy benchmark. Post text is conservatively partial (no expansion proof); continuations are partial or uncertain, never claimed exhaustive.
+Failures and wholly unavailable results exit nonzero. Partial/uncertain results exit zero: **check field statuses, not just the exit code**. Traces are saved on completion or caught failure, not hard crashes. Credentials are redacted, but review artifacts before sharing.
 
-Traces contain public model/tool calls, per-call usage and terminal status, not private reasoning. Total usage is summed; missing usage stays unknown. Review artifacts before sharing. Traces persist on completion or caught failure, not after hard crashes or filesystem errors.
+## Design
 
-## Security
+Node.js ESM, Playwright, Zod, and the official OpenAI SDK; no custom Agent framework.
 
-- Generate a **dedicated, restricted project API key** with only the permissions this Agent needs. Apply provider-side usage limits/alerts; **revoke it anytime**, especially after testing or suspected exposure.
-- Store it in the local `.env` file (plaintext, Git-ignored); keep owner-only permissions and never commit or share it. An injected `OPENAI_API_KEY` takes precedence and is removed from Node's environment after loading. No Keychain setup is needed.
-- Model requests use a fixed OpenAI HTTPS endpoint, reject redirects and disable SDK debug logging. Chromium receives only selected OS settings, not model credentials.
-- Browser traffic uses a public-IPv4/HTTPS-port-only proxy with checked, pinned destination IPs. Private/loopback/metadata addresses, HTTP and IPv6 are blocked, including redirects/subresources; IPv6-only sites are unsupported.
-- Traces redact configured keys and credential fields, including serialized JSON. Redaction is not a universal secret detector: review artifacts before sharing and use a dedicated, least-privilege provider key.
+1. Validate one supported URL and use the model to select requested fields.
+2. Acquire public post/profile evidence in anonymous Chromium. Exclude recommendations and record recognized vertical-connector parent relationships.
+3. Deterministically exclude reader-reply ancestry and recorded missing/invalid parents. Use conversation context to classify eligible author continuations.
+4. Assemble JSON from evidence IDs, preserving source text/order, and save the sanitized trace.
 
-This remains a trusted local CLI, not an OS-level network sandbox or public service. Live provider authentication was verified locally; each operator still needs their own restricted key. See [security checks](security-checks/README.md).
+At most two model calls per task, with timeouts and no automatic retries. Browser credentials are isolated and egress is restricted to public HTTPS. This is a local CLI, not an OS sandbox; see [security details](security-checks/README.md).
 
-## Verified examples
-
-See [live CLI examples and acceptance checks](examples/README.md), including committed [result JSON](examples/share/result.json) and [trace JSON](examples/share/trace.json). The share example retains the genuine continuation and excludes the author's response to a reader. Canonical/all-fields and profile-name-only requests were also checked live.
-
-The paid regression is opt-in and uses recorded public evidence (no browser):
+## Validation and limits
 
 ```sh
-RUN_LIVE_MODEL=1 node --test test/live-continuations.test.mjs
+npm test # Offline fixture tests; no API key needed.
+RUN_LIVE_MODEL=1 node --test test/live-continuations.test.mjs # Paid, opt-in.
 ```
 
-It checks reader-reply exclusion and anonymous multipart continuation selection, running three two-call workflows per case across three cases (up to eighteen model calls) and saving sanitized local artifacts. The multipart case does not rely on login-only sequence badges; see the [screenshot comparison and findings](examples/README.md#multipart-badge-investigation-wheretogo_blue). Ordinary `npm test` skips it. A temporary checkout with empty npm and Playwright caches passed `npm ci`, a fresh `npx playwright install chromium`, and all 54 offline tests on macOS arm64 with Node 26.12.0. Canonical/share live CLI checks also passed from that install, preserving source text, expected continuation IDs, token totals and partial statuses. This verifies fresh downloads on this machine, not another OS or the Node 22 minimum.
+- **54 offline tests passed.** Three recorded-evidence model cases passed three runs each; the full paid suite makes up to 18 model calls. Covers field combinations, text/order, reader branches, failures, usage, tracing, and security.
+- Fresh dependency/Chromium downloads and canonical/share CLI runs were verified on macOS arm64 with Node 26.12.0. Other OSes and the Node 22 minimum are unverified.
+- Public content may be blocked, truncated, or missing text blocks. No login bypass, extra scrolling, or content expansion is attempted; post/continuation results remain partial or uncertain, not exhaustive.
+- DOM connectors are layout-dependent; unknown relationships still need model interpretation and can be misclassified. Login-only sequence badges are not required. Rounded follower counts are not reported as exact.
 
-## Project planning
+See [examples and findings](examples/README.md) for observed successes, failures, and regression evidence.
 
-- [Original assignment](init_assignment.md): invariant acceptance reference; preserve verbatim. Verify with `shasum -a 256 -c init_assignment.sha256`.
-- [Assignment comparison](ASSIGNMENT_STATUS.md): requirement-by-requirement evidence and gaps.
-- [Initial plan](PLAN.md): requirements, architecture, milestones, validation and scope.
-- [Implementation tracker](IMPLEMENTATION_TRACKER.md): completed work, evidence, gaps and next steps.
-- [Work log](WORK_LOG.md): actions, rationale and verification history.
-- [Data contracts](CONTRACTS.md): runtime schemas for requests, evidence, results, token usage and execution traces.
+## AI assistance and references
 
-```sh
-npm ci
-npx playwright install chromium
-npm test
-npm run probe -- 'https://www.threads.com/@whoscall_tw/post/De6Yqf8nxuz'
-```
+AI assisted implementation, tests, documentation, and live-result analysis. Deterministic tests verify orchestration; model evaluations are narrow checks, not a general accuracy guarantee.
 
-Optionally pass an output directory after the URL. Each run launches Chromium with a fresh, non-persistent context: no private profile, imported cookies or login credentials. It observes the page for eight seconds after DOMContentLoaded; this does not prove loading is complete.
-
-Outputs: `page.json` (HTTP status, URL, timestamp, title, rendered body text, description and links) and `page.png`. Artifacts are ignored by Git. stdout contains the observation JSON; use `npm run --silent probe -- URL` to omit npm's banner. `status: observed` means a page was inspected, not successful or complete data extraction. Navigation failures are recorded with `status: failed`; HTTP errors remain visible in `http_status`.
-
-## Structured acquisition (M3)
-
-```sh
-npm run --silent acquire -- 'https://www.threads.com/@whoscall_tw/post/De6Yqf8nxuz' artifacts/m3-canonical
-npm run --silent acquire -- 'https://www.threads.com/share/GW3EPb5M8/' artifacts/m3-share
-```
-
-Each run uses a fresh non-persistent Chromium context (`en-US`, service workers blocked), acquires the post conversation, and opens the identified author's public profile. It writes `evidence.json` to the output directory and emits the same JSON to stdout. The result contains the original input URL and separate post/profile observations validated by `EvidenceSchema`. No identified target produces a nonzero exit code; the evidence still explains the failure. Missing profile values do not erase post evidence.
-
-Acquisition isolates visible pressable containers using their timestamp permalink and unambiguous language-tagged text block, excluding page chrome/link previews. A recognized recommendation-section boundary excludes everything after it, including same-author recommendations. Without a recognized boundary, only the target post is retained. Ambiguous/hidden target evidence is withheld; identical duplicate IDs are deduplicated and conflicting versions are not arbitrarily selected.
-
-Reader comments and author replies to readers remain as **separate evidence context**, not claimed author continuations. `parent_id` records recognized vertical-connector edges within a rendered conversation group; null means unknown. Edges are extracted independently of text availability, so a skipped parent remains a missing ancestor, not a new continuation root. This layout-dependent matcher does not infer links between groups or connect the first group post to the original. See [connector findings](examples/README.md#vertical-connectors-and-reader-branches-tai_wan_lan). The six-second observation window does not establish exhaustive loading or untruncated text; `conversation_complete` remains false. No expansion, extra scrolling or login bypass occurs.
-
-Profile names come from an unambiguous profile heading, not the username or timeline. Full numeric public follower `title` attributes take precedence over rounded visible displays. In the M3 live checks the profile exposed `15,107` as a title, allowing an exact count; the earlier probe had inspected only the `15.1K` display. Missing/unsupported/ambiguous fields stay null with reasons.
-
-Both requested live paths returned HTTP 200 during M3. The canonical page yielded two conversation nodes; the share URL resolved to `/@whoscall_tw/post/Dd0_RGwH4K7` and yielded four, including a reader question and the author's answer. Neither observation establishes complete continuations. Local evidence is in `artifacts/m3-canonical/evidence.json` and `artifacts/m3-share/evidence.json` (ignored by Git).
-
-## Initial live observations
-
-The supplied post and its author's public profile both returned HTTP 200 during the initial test:
-
-- Post: `https://www.threads.com/@whoscall_tw/post/De6Yqf8nxuz`
-- Profile: `https://www.threads.com/@whoscall_tw`
-- Profile displayed name: `Whoscall`.
-- Profile displayed followers: `15.1K` (rounded display, not an exact count).
-- Main text: `看到 07 開頭的陌生號碼\n先別急著認定是高雄打來的\n有可能是070 網路電話`.
-- A same-author continuation candidate immediately followed, marked `Author`, beginning `辨認方法如下：`; its permalink was `https://www.threads.com/@whoscall_tw/post/De6YqepH6ke`.
-- The post page also contained unrelated `Related threads` entries. Whole-page text must not be treated as extracted post content.
-- A sign-in modal obscured the screenshot, although the already-loaded DOM text was readable. No login or access-limit bypass was attempted.
-
-Evidence is saved locally in `artifacts/whoscall-initial/` and `artifacts/whoscall-profile/`. This observation does not establish exhaustive continuation coverage or a general solution for distinguishing author-reader replies.
-
-## Data contracts
-
-`src/contracts.mjs` provides Zod runtime schemas and `buildResult` for field selection, explicit unavailable/uncertain/partial states, rounded follower displays, consistent token usage and trace structure. The acquisition module and Agent use these contracts; schemas alone do not prove contextual classification accuracy. See [CONTRACTS.md](CONTRACTS.md) for semantics and remaining responsibilities.
-
-## Validation and limitations
-
-`npm test` also validates all 15 nonempty requested-field combinations, missing/uncertain data, follower precision, token totals, evidence identity and trace terminal/error states. The initial browser test uses real Chromium against a local fixture server. Additional synthetic browser fixtures test post boundaries, original rendered text, recommendation exclusion, client-side redirects (including HTTP errors), missing/ambiguous/hidden/conflicting evidence, rounded/exact profile counts, invalid inputs and timeouts. Fixture provenance is documented in `test/fixtures/README.md`. Live network observations are separate from deterministic tests.
-
-The probe/acquisition commands remain evidence tools, separate from the Agent result interface. The Agent now implements model orchestration, contextual continuation selection, aggregate usage and redacted tracing with deterministic fake-provider tests. Live canonical/share and profile-only runs passed the checks documented above; fresh dependency/browser installation was also verified on this Mac. Broad model accuracy, incremental loading and other-machine/OS setup remain unverified. Source and examples are on GitHub; reviewers need access to the private repository. All CLI browser launches use the shared public-HTTPS egress guard described under Security; it is not an OS-level sandbox or an untrusted remote browsing service. The probe captures public rendered text and links, not browser cookies, headers or storage. Review artifacts before sharing, since public links can still contain tracking parameters.
-
-AI assistance was used to write the probe, contracts, structured acquisition, tests and documentation, and to run and interpret the live browser observations.
+[Original assignment](init_assignment.md) · [Requirement status](ASSIGNMENT_STATUS.md) · [Data contracts](CONTRACTS.md) · [Work log](WORK_LOG.md)

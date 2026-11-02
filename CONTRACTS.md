@@ -1,6 +1,6 @@
 # Data contracts
 
-Runtime source of truth: [`src/contracts.mjs`](src/contracts.mjs), using Zod. These are contracts and pure result assembly, not an implemented browser extractor or LLM Agent.
+Runtime source of truth: [`src/contracts.mjs`](src/contracts.mjs), using Zod. These define contracts and pure result assembly. `src/acquisition.mjs` now produces validated browser evidence; the LLM Agent and final-result orchestration remain unimplemented.
 
 ## Request
 
@@ -13,7 +13,7 @@ Runtime source of truth: [`src/contracts.mjs`](src/contracts.mjs), using Zod. Th
 - Nonempty, unique selection from `profile_name`, `follower_count`, `post_content`, `author_continuations`.
 - Schema acceptance of a share/legacy URL is not evidence that its redirect/acquisition path works live.
 
-`ThreadsUrlSchema` validates a general public Threads URL for browser/profile evidence; `PostUrlSchema` additionally restricts task/post routes. Browser navigation will still need redirect and network-target controls; these schemas alone are not an SSRF defense for a complete browser session.
+`ThreadsUrlSchema` validates a general public Threads URL for browser evidence; `PostUrlSchema` restricts task/post routes and `ProfileUrlSchema` restricts public profile routes. Browser navigation will still need redirect and network-target controls; these schemas alone are not an SSRF defense for a complete browser session.
 
 ## Evidence
 
@@ -53,7 +53,7 @@ or a matching full numeric display and integer:
 { "display": "15,123", "precision": "exact", "count": 15123 }
 ```
 
-Unknown precision should be reported as uncertain/unavailable rather than invented. Exact counts require a plain numeric display (optional comma grouping); abbreviations cannot masquerade as exact integers.
+Unknown precision should be reported as uncertain/unavailable rather than invented. Exact counts require a plain numeric display (optional comma grouping); abbreviations cannot masquerade as exact integers. Acquisition uses a full numeric public `title` attribute when unambiguous and available; `display` then records that full source string rather than the abbreviated label. Without it, abbreviated displays remain rounded.
 
 `buildResult` validates the request, projects only requested values, and marks missing values unavailable with a reason. It does not manufacture evidence. The result includes `requested_fields`, source input/resolved URLs (resolved may be null), `extracted_at`, data and usage. `ResultSchema` checks field selection and task status consistency:
 

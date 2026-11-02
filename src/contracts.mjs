@@ -14,6 +14,10 @@ export const PostUrlSchema = ThreadsUrlSchema.refine(value => {
   return /^\/(?:@[A-Za-z0-9._]+\/post|share)\/[A-Za-z0-9_-]+\/?$/.test(new URL(value).pathname);
 }, 'Expected a Threads post or share URL.');
 
+export const ProfileUrlSchema = ThreadsUrlSchema.refine(value => {
+  return /^\/@[A-Za-z0-9._]+\/?$/.test(new URL(value).pathname);
+}, 'Expected a Threads profile URL.');
+
 const fieldsSchema = z.array(z.enum(FIELDS)).min(1).refine(fields => new Set(fields).size === fields.length, 'Duplicate fields.');
 export const RequestSchema = z.strictObject({ message: nonempty, url: PostUrlSchema, fields: fieldsSchema });
 

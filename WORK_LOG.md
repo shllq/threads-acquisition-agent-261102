@@ -74,3 +74,11 @@ Remaining: structural browser extraction, share-resolution live checks, natural-
 6. Added SDK fake-client tests and a full fake-provider workflow through real Chromium conversation/profile fixtures. Its first run exposed an incorrect test expectation (15123 instead of the fixture's public title 15,107); read the fixture and corrected the assertion. This does not validate actual model classification accuracy.
 7. Updated README, contracts, tracker and assignment status to explain the implemented workflow and remaining live-evaluation/delivery gaps. Preserved the invariant assignment. No cleanup/deletion was needed; retained existing artifacts and recommendation behavior.
 8. Final checks: all 36 tests passed; dependency audit reported zero vulnerabilities; assignment checksum and whitespace check passed. crapper/dryer/mutator remain unavailable; no live model check or clean-install check. Commit this bounded milestone separately; push blocked by the absent remote.
+
+## Credential-security documentation checkpoint
+
+1. Checked the clean working tree and current SDK/browser/redaction call sites to confirm the previously reviewed risks remain open. No secrets were read or displayed.
+2. Added a dedicated Security section to README and linked `security-checks/README.md`. Replaced the literal shell key-assignment example with a credential-manager prerequisite to avoid encouraging shell-history exposure; explicitly stated that Keychain support is not implemented.
+3. Added the security-check folder with the local threat model, four open findings, dummy-secret review evidence, proposed minimal fixes and unchecked acceptance criteria. Separated historical observations from checks actually run at this checkpoint; no executable checker or credential framework was added.
+4. Checked local Markdown links, whitespace and the invariant assignment checksum. This is documentation-only: no application tests, browser/model calls, credential-store access or process-environment reproduction was needed. No cleanup was needed. crapper/dryer/mutator are unavailable and irrelevant to this prose change.
+5. Commit this documentation checkpoint separately. Push remains blocked because no remote is configured; the credential-security fixes themselves remain pending.

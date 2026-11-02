@@ -8,7 +8,9 @@ Requires Node.js 22+ and npm.
 ```sh
 npm ci
 npx playwright install chromium
-export OPENAI_API_KEY='your-key' # Keep credentials out of source control.
+# Current credential interface; read Security below before using a real key.
+# Do not type a real key into a shell command or commit it to source control.
+# Supply OPENAI_API_KEY through your trusted credential manager.
 export OPENAI_MODEL='gpt-4.1-mini' # Optional; this is the default.
 npm run --silent agent -- '請取得這篇 Threads 作者的個人檔案名稱、追蹤者數量、貼文內容及續文：https://www.threads.com/share/GW3EPb5M8/' artifacts/my-run
 ```
@@ -18,6 +20,19 @@ Quote the entire message as one argument; the optional second argument is the ou
 The official OpenAI SDK makes at most two calls: requested-field selection and, only when requested and a target exists, contextual continuation selection. Calls have a 30-second SDK timeout, no automatic retries and a 2,000-output-token cap. Browser acquisition is bounded independently. Only the author's requested profile fields trigger profile acquisition. Model selections must reference eligible same-author evidence IDs; output text comes directly from evidence in observed order, never model-written text. Contextual classification can still be wrong: no live model evaluation has been performed. Post text is conservatively partial (no expansion proof); continuations are partial or uncertain, never claimed exhaustive.
 
 Trace records contain public model messages/content, tool inputs/results, per-call usage and terminal status—not raw SDK objects or private reasoning. All model usage is summed; omitted usage stays unknown. The configured API key, credential-shaped object fields and common bearer/key patterns are redacted. Review logs before sharing: this is not a universal arbitrary-secret detector, and public conversation context can appear in tool/model logs. Completed/failed runs persist traces; process termination, machine crashes and filesystem failures are not crash-recoverable.
+
+## Security
+
+**Credential hardening is pending. This is a trusted local CLI, not a public browsing service.** See [security checks and open findings](security-checks/README.md) for evidence, proposed fixes and acceptance checks.
+
+- The current implementation reads `OPENAI_API_KEY` from the environment. Environment variables are not inherently unsafe, but a shell-wide export reaches later child processes; typing the value into a command can also save it in shell history. Never put a key in CLI arguments, model messages, source files or logs. A plaintext `.env` file is not a security upgrade.
+- **Open: API destination.** The SDK currently honors `OPENAI_BASE_URL`, including HTTP endpoints. Use only the default OpenAI HTTPS endpoint; do not run with an untrusted endpoint override. Explicitly pinning the endpoint in code is pending.
+- **Open: browser credential isolation.** Chromium currently inherits the parent environment, including an exported model key. Ordinary page JavaScript cannot directly read this environment, but browser processes should not receive model credentials. A restricted browser environment is pending.
+- **Open: credential storage.** Recommended for local macOS use: retrieve a dedicated project key from macOS Keychain directly into Node memory. Keychain integration is **not implemented**; do not assume the CLI reads Keychain. Use only required provider permissions and provider-side usage controls; rotate/revoke a key if exposed. Keychain cannot protect against malicious code already running inside the authorized Node process.
+- **Open: trace redaction.** Configured-key replacement and object-field redaction exist, but credential-shaped fields inside serialized JSON strings can survive. Logs may also contain public reader conversation and tracking URLs. Review `result.json` and `trace.json` before sharing; Git-ignored artifacts are not encrypted or access-controlled by Git.
+- Browsing uses fresh contexts without private cookies or login state. Input/final-route validation is not a network sandbox; redirects and subresources are not fully isolated. Do not expose the tools to untrusted remote users.
+
+The security review used dummy secrets only. No real credential exposure was established. Writing these notes does **not** resolve the findings; live credential/provider checks and operating-system credential-store verification remain pending.
 
 ## Project planning
 

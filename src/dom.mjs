@@ -8,11 +8,32 @@ export function observeConversation(sourceUrl) {
   });
   const problems = [];
   const posts = [];
+  function timestampUrls(container) {
+    return [...new Set([...container.querySelectorAll('a[href]')].filter(anchor =>
+      anchor.querySelector('time') && anchor.closest(selector) === container
+    ).map(anchor => new URL(anchor.getAttribute('href'), sourceUrl).href))];
+  }
+  function connectedParentUrl(container) {
+    const group = container.closest('[data-virtualized]');
+    if (!group) return null;
+    const siblings = [...group.querySelectorAll(selector)].filter(element => element.closest('[data-virtualized]') === group);
+    const previous = siblings[siblings.indexOf(container) - 1];
+    if (!previous?.checkVisibility()) return null;
+    // shortcut: observed Threads connector markup, revalidate if its style/group structure changes.
+    const connectors = [...previous.querySelectorAll('div[style]')].filter(element => {
+      const rect = element.getBoundingClientRect();
+      return element.closest(selector) === previous && !previous.contains(element.closest('[lang]')) &&
+        !element.closest('a,aside,[role="button"]') && element.children.length === 0 && !element.textContent.trim() &&
+        element.style.getPropertyValue('--x-borderBottomLeftRadius').trim() === '2px' &&
+        element.style.getPropertyValue('--x-borderBottomRightRadius').trim() === '2px' &&
+        element.checkVisibility({ visibilityProperty: true, opacityProperty: true }) && rect.width > 0 && rect.width <= 3 && rect.height > 10;
+    });
+    if (connectors.length !== 1) return null;
+    const urls = timestampUrls(previous);
+    return urls.length === 1 ? urls[0] : null;
+  }
   for (const [position, container] of containers.entries()) {
-    const permalinks = [...container.querySelectorAll('a[href]')].filter(anchor => {
-      return anchor.querySelector('time') && anchor.closest(selector) === container;
-    }).map(anchor => new URL(anchor.getAttribute('href'), sourceUrl).href);
-    const urls = [...new Set(permalinks)];
+    const urls = timestampUrls(container);
     if (urls.length !== 1) {
       problems.push(`Container ${position} has no unique timestamp permalink; skipped.`);
       continue;
@@ -31,6 +52,7 @@ export function observeConversation(sourceUrl) {
     });
     posts.push({
       url: urls[0], text: languageBlocks[0].innerText, position, author_marker: authorMarker,
+      parent_url: connectedParentUrl(container),
       is_recommendation: Boolean(boundary && (boundary.compareDocumentPosition(container) & Node.DOCUMENT_POSITION_FOLLOWING))
     });
   }

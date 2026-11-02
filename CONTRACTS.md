@@ -1,6 +1,6 @@
 # Data contracts
 
-Runtime source of truth: [`src/contracts.mjs`](src/contracts.mjs), using Zod. These define contracts and pure result assembly. `src/acquisition.mjs` now produces validated browser evidence; `src/agent.mjs` now orchestrates model field selection, acquisition and contextual continuation selection; `src/model.mjs` projects public OpenAI SDK responses. Live model behavior remains unverified.
+Runtime source of truth: [`src/contracts.mjs`](src/contracts.mjs), using Zod. These define contracts and pure result assembly. `src/acquisition.mjs` now produces validated browser evidence; `src/agent.mjs` now orchestrates model field selection, acquisition and contextual continuation selection; `src/model.mjs` projects public OpenAI SDK responses. Live canonical/share/multipart workflows and three recorded-case model regressions have been checked; broad model accuracy remains unverified.
 
 ## Request
 
@@ -22,11 +22,11 @@ Runtime source of truth: [`src/contracts.mjs`](src/contracts.mjs), using Zod. Th
 Each post has:
 
 - `id`, `url`, `author`, original `text`, and unique observed `position`.
-- `parent_id`: null means **unknown**, not a proven conversation root.
+- `parent_id`: an observed connector edge to the previous post within the same recognized rendered group. Null means **unknown**, not a proven conversation root. A referenced parent may have been withheld for missing/ambiguous text; never bridge across it to another post. This is rendered structural evidence, not an authenticated platform parent-ID API.
 - `author_marker`: whether the page displayed an author marker, not proof of continuation.
 - `is_recommendation`: a structural observation, not inferred merely from a different author.
 
-Post IDs and positions must be unique within an observation. An incomplete conversation observation must explain at least one limitation. Evidence may retain excluded candidates for auditability; output assembly must select only verified relevant posts. This schema does not infer reply relationships, sort continuations, or establish completeness by itself.
+Post IDs and positions must be unique within an observation. An incomplete conversation observation must explain at least one limitation. Evidence may retain excluded candidates for auditability; output assembly must select only verified relevant posts. This schema does not infer reply relationships, sort continuations, or establish completeness by itself. The browser recognizes an empty visible 2px-style connector outside post text within a shared `[data-virtualized]` group; its DOM/style assumptions are layout-dependent. The Agent excludes candidates whose recorded ancestry crosses a reader or has a missing, cyclic or nonpreceding parent, and sends eligible IDs to the classifier. Invalid model selections fail the run. A chain ending at an unknown parent still needs contextual classification; it is not asserted to reach the target.
 
 Profile evidence has its own URL, nullable display name and nullable follower display/count.
 

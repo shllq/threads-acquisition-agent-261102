@@ -36,6 +36,18 @@ function totalUsage(events) {
   }), { status: 'known', input_tokens: 0, output_tokens: 0, total_tokens: 0 });
 }
 
+function canBeContinuation(candidate, root, context) {
+  if (candidate.id === root.id || candidate.author !== root.author || candidate.position <= root.position) return false;
+  let current = candidate;
+  while (current.parent_id !== null) {
+    const parent = context.find(post => post.id === current.parent_id);
+    if (!parent || parent.author !== root.author || parent.position >= current.position) return false;
+    if (parent.id === root.id) return true;
+    current = parent;
+  }
+  return true; // Unknown ancestry still needs contextual classification; it is not a proven author chain.
+}
+
 // Two bounded model calls at most; browser tools and result assembly stay deterministic.
 export async function runAgent({ message, model, modelName, acquirePost, acquireProfile, secrets = [] }) {
   const trace = { run_id: randomUUID(), events: [] };
@@ -87,10 +99,11 @@ export async function runAgent({ message, model, modelName, acquirePost, acquire
       }
       if (request.fields.includes('author_continuations')) {
         const context = post.posts.filter(candidate => !candidate.is_recommendation).sort((a, b) => a.position - b.position);
-        const decision = await ask('Identify genuine continuations of the target by its author using the ordered conversation context. A continuation adds to the original post for its general audience, rather than addressing a reader. For each same-author candidate, first inspect preceding reader messages: exclude answers to their questions, troubleshooting, acknowledgments and apologies or resolution updates addressing an issue a reader raised, even when they share the original topic. Same author, Author marker, topic similarity or adjacency alone is not proof. Unknown parent_id does not mean a top-level continuation. Include only candidates supported as additions to the original post; omit ambiguous candidates and set uncertain=true if any candidate cannot be distinguished from a reader reply. Never assert exhaustive coverage. Select existing evidence IDs only, not the target. Shape: {"continuation_ids":[...],"uncertain":boolean,"reason":"brief public explanation"}.', { target_id: root.id, posts: context, limitations: post.limitations }, decisionSchema);
+        const eligibleIds = context.filter(candidate => canBeContinuation(candidate, root, context)).map(candidate => candidate.id);
+        const decision = await ask('Select only IDs from eligible_continuation_ids; structural reader-reply branches and unresolved recorded parents are ineligible. Identify genuine continuations of the target by its author using the ordered conversation context. A continuation adds to the original post for its general audience, rather than addressing a reader. For each same-author candidate, first inspect preceding reader messages: exclude answers to their questions, troubleshooting, acknowledgments and apologies or resolution updates addressing an issue a reader raised, even when they share the original topic. Same author, Author marker, topic similarity or adjacency alone is not proof. Unknown parent_id does not mean a top-level continuation. Include only candidates supported as additions to the original post; omit ambiguous candidates and set uncertain=true if any candidate cannot be distinguished from a reader reply. Never assert exhaustive coverage. Select existing evidence IDs only, not the target. Shape: {"continuation_ids":[...],"uncertain":boolean,"reason":"brief public explanation"}.', { target_id: root.id, posts: context, eligible_continuation_ids: eligibleIds, limitations: post.limitations }, decisionSchema);
         const selected = decision.continuation_ids.map(id => {
           const candidate = context.find(item => item.id === id);
-          if (!candidate || candidate.id === root.id || candidate.author !== root.author || candidate.position <= root.position) throw new Error(`Invalid continuation selection: ${id}`);
+          if (!candidate || !eligibleIds.includes(id)) throw new Error(`Invalid continuation selection: ${id}`);
           return candidate;
         }).sort((a, b) => a.position - b.position).map(({ id, url, text }) => ({ id, url, text }));
         values.author_continuations = {

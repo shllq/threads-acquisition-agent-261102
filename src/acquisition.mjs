@@ -8,12 +8,14 @@ function emptyEvidence(url) {
   };
 }
 
-function identifyPost(post) {
+function identifyPost({ parent_url, ...post }) {
   const valid = PostUrlSchema.safeParse(post.url);
   if (!valid.success) return null;
   const match = new URL(valid.data).pathname.match(/^\/@([^/]+)\/post\/([^/]+)\/?$/);
   if (!match) return null;
-  return { ...post, id: match[2], author: match[1], parent_id: null };
+  const parent = PostUrlSchema.safeParse(parent_url);
+  const parentId = parent.success ? new URL(parent.data).pathname.match(/^\/@[^/]+\/post\/([^/]+)\/?$/)?.[1] : null;
+  return { ...post, id: match[2], author: match[1], parent_id: parentId ?? null };
 }
 
 function samePost(a, b) {
@@ -23,7 +25,7 @@ function samePost(a, b) {
 async function readConversation(page, evidence) {
   const observed = await page.evaluate(observeConversation, evidence.source_url);
   evidence.limitations.push(...observed.problems,
-    'Public rendered view only; conversation completeness and parent/reply relationships are not confirmed.',
+    'Public rendered view only; parent IDs record recognized connector edges, not complete reply relationships.',
     'Rendered text may be truncated; no expansion or additional loading was attempted.');
   if (observed.login_prompt) evidence.limitations.push('A login/sign-in prompt is present; no login or access-limit bypass was attempted.');
   let posts = observed.posts.map(identifyPost).filter(Boolean);
@@ -41,7 +43,7 @@ async function readConversation(page, evidence) {
   for (const post of posts.filter(post => !post.is_recommendation)) {
     if (unique.has(post.id)) {
       const existing = unique.get(post.id);
-      if (!existing || existing.text !== post.text || existing.author !== post.author) {
+      if (!existing || existing.text !== post.text || existing.author !== post.author || existing.parent_id !== post.parent_id) {
         unique.set(post.id, null);
         evidence.limitations.push(`Conflicting versions of post ${post.id}; omitted rather than choosing one.`);
       } else {

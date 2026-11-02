@@ -1,0 +1,40 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+.connector { width: 2px; height: 40px; background: #e5e5e5; }
+</style></head><body>
+<div data-pressable-container="true">
+  <a href="/@example/post/ROOT"><time>Today</time></a><div lang="zh-TW">原文</div>
+</div>
+<div data-virtualized="false">
+  <div><div data-pressable-container="true">
+    <a href="/@example/post/NEXT"><time>Today</time></a><div lang="zh-TW">續文一</div>
+    <div class="connector" style="--x-borderBottomLeftRadius: 2px; --x-borderBottomRightRadius: 2px;"></div>
+  </div></div>
+  <div><div data-pressable-container="true">
+    <a href="/@example/post/LAST"><time>Today</time></a><div lang="zh-TW">續文二</div>
+  </div></div>
+</div>
+<div data-virtualized="false">
+  <div><div data-pressable-container="true">
+    <a href="/@reader/post/QUESTION"><time>Today</time></a><div lang="zh-TW">讀者問題</div>
+    <div class="connector" style="--x-borderBottomLeftRadius: 2px; --x-borderBottomRightRadius: 2px;"></div>
+  </div></div>
+  <div><div data-pressable-container="true">
+    <a href="/@example/post/ANSWER"><time>Today</time></a><div lang="zh-TW">回答讀者</div>
+    <div class="connector" style="--x-borderBottomLeftRadius: 2px; --x-borderBottomRightRadius: 2px;"></div>
+  </div></div>
+  <div><div data-pressable-container="true">
+    <a href="/@example/post/FOLLOWUP"><time>Today</time></a><div lang="zh-TW">繼續回答讀者</div>
+  </div></div>
+</div>
+<div data-virtualized="false">
+  <div><div data-pressable-container="true">
+    <a href="/@reader/post/MISSING"><time>Today</time></a><div>No unambiguous post text</div>
+    <div class="connector" style="--x-borderBottomLeftRadius: 2px; --x-borderBottomRightRadius: 2px;"></div>
+  </div></div>
+  <div><div data-pressable-container="true">
+    <a href="/@example/post/ORPHAN"><time>Today</time></a><div lang="zh-TW">不能遺失父節點後當成續文</div>
+  </div></div>
+</div>
+<div><span>Related threads</span></div>
+</body></html>

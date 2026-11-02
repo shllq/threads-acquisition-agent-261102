@@ -68,6 +68,30 @@ test('classification cannot select nonexistent IDs, readers, root or recommendat
   }
 });
 
+test('model cannot select a reader-reply branch, including an author-only tail or missing/invalid ancestor', async () => {
+  const linked = [
+    { ...post('continued', 'author', '續文', 1), parent_id: 'root' },
+    { ...post('answer', 'author', '回答讀者', 3), parent_id: 'reader' },
+    { ...post('tail', 'author', '繼續回答', 4), parent_id: 'answer' },
+    { ...post('orphan', 'author', '父節點未擷取', 5), parent_id: 'missing' },
+    { ...post('cycle', 'author', '循環', 6), parent_id: 'cycle' },
+    { ...post('forward', 'author', '逆序父節點', 7), parent_id: 'later' },
+    { ...post('later', 'author', '稍後的節點', 8), parent_id: null }
+  ];
+  const source = { ...evidence, posts: [evidence.posts[0], evidence.posts[2], ...linked] };
+  for (const id of ['answer', 'tail', 'orphan', 'cycle', 'forward']) {
+    const run = await runAgent({ message: `內容及續文 ${url}`, modelName: 'fixture',
+      model: modelWith({ continuation_ids: [id], uncertain: false, reason: 'Incorrect model decision.' }), acquirePost: async () => source });
+    assert.equal(run.result, null, `${id} must not reach the result`);
+    assert.equal(run.trace.events.at(-1).status, 'failed');
+  }
+  const run = await runAgent({ message: `內容及續文 ${url}`, modelName: 'fixture', model: modelWith(), acquirePost: async () => source });
+  assert.equal(run.error, null);
+  assert.deepEqual(run.result.data.author_continuations.value.map(post => post.id), ['continued']);
+  const input = JSON.parse(run.trace.events.findLast(event => event.type === 'model_call').request.messages[1].content);
+  assert.deepEqual(input.eligible_continuation_ids, ['continued', 'later']);
+});
+
 test('model failure persists a failed call and terminal event without credentials or private reasoning', async () => {
   const run = await runAgent({ message: `內容 ${url}`, modelName: 'fixture', secrets: ['test-secret'], model: async () => { throw new Error('Authorization: Bearer test-secret'); } });
   assert.equal(run.result, null);

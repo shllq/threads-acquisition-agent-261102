@@ -47,6 +47,37 @@ test('extracts separate original posts in observed order, excluding UI and same-
   });
 });
 
+test('extracts connector parents within a group without bridging skipped text or unrelated groups', async () => {
+  const html = await readFile(new URL('./fixtures/connected-conversation.html', import.meta.url), 'utf8');
+  await withBrowser(async page => {
+    await serve(page, postUrl, html);
+    const evidence = await acquirePost(page, postUrl, options);
+    assert.deepEqual(evidence.posts.map(({ id, parent_id }) => [id, parent_id]), [
+      ['ROOT', null], ['NEXT', null], ['LAST', 'NEXT'], ['QUESTION', null],
+      ['ANSWER', 'QUESTION'], ['FOLLOWUP', 'ANSWER'], ['ORPHAN', 'MISSING']
+    ]);
+    assert.equal(evidence.conversation_complete, false);
+  });
+});
+
+test('does not infer parents from adjacency, hidden bars, text decorations or an unrecognized group', async () => {
+  const html = await readFile(new URL('./fixtures/connected-conversation.html', import.meta.url), 'utf8');
+  for (const body of [
+    html.replaceAll('data-virtualized', 'data-unknown'),
+    html.replaceAll('class="connector"', 'class="connector" hidden'),
+    html.replace('.connector {', '.connector { visibility: hidden;'),
+    html.replace('.connector {', '.connector { opacity: 0;'),
+    html.replaceAll('class="connector"', 'lang="en" class="connector"'),
+    html.replaceAll('--x-borderBottomLeftRadius', '--unknown-radius')
+  ]) {
+    await withBrowser(async page => {
+      await serve(page, postUrl, body);
+      const evidence = await acquirePost(page, postUrl, options);
+      assert.ok(evidence.posts.every(post => post.parent_id === null));
+    });
+  }
+});
+
 test('client-side share redirect resolves to canonical source and preserves unknown reply relationships', async () => {
   await withBrowser(async page => {
     await serve(page, shareUrl, `<script>setTimeout(() => location.replace(${JSON.stringify(postUrl)}), 20)</script>`);

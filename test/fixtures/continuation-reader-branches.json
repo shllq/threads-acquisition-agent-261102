@@ -1,0 +1,137 @@
+{
+  "evidence": {
+    "source_url": "https://www.threads.com/@tai_wan_lan/post/DU0gmxnk-dT",
+    "captured_at": "2026-11-02T05:41:25.172Z",
+    "http_status": 200,
+    "conversation_complete": false,
+    "limitations": [
+      "Post https://www.threads.com/@tai_wan_lan/post/DU0kkvfE0P5 has no unambiguous text block; skipped.",
+      "Post https://www.threads.com/@eatqueenll_foodie/post/DU0lOReiQbG has no unambiguous text block; skipped.",
+      "Post https://www.threads.com/@j.ohyeahhh/post/DU0vvxmj5BT has no unambiguous text block; skipped.",
+      "Post https://www.threads.com/@chia_hsin_liou/post/DU0wVTCE_zP has no unambiguous text block; skipped.",
+      "Post https://www.threads.com/@tai_wan_lan/post/DU0w0XvE4GF has no unambiguous text block; skipped.",
+      "Post https://www.threads.com/@tai_wan_lan/post/DU1tP-RkxJ4 has no unambiguous text block; skipped.",
+      "Post https://www.threads.com/@95.09.18__/post/DU1XjjbE57I has no unambiguous text block; skipped.",
+      "Public rendered view only; parent IDs record recognized connector edges, not complete reply relationships.",
+      "Rendered text may be truncated; no expansion or additional loading was attempted.",
+      "A login/sign-in prompt is present; no login or access-limit bypass was attempted."
+    ],
+    "posts": [
+      {
+        "id": "DU0gmxnk-dT",
+        "url": "https://www.threads.com/@tai_wan_lan/post/DU0gmxnk-dT",
+        "author": "tai_wan_lan",
+        "text": "這招真的會起雞皮疙瘩...\n沒想到過年最酷的事情是\n「攤開阿祖的公職旅程」。💼\n與其尷尬應對長輩問你薪水多少，不如轉移焦點，直接聊聊長輩的長輩當年在哪裡上班！\n大家快去搜尋「臺灣總督府職員錄系統」。只要輸入名字，就可能看到阿祖當年任職公職的職稱、月俸，連哪一年從哪個單位調職都寫得清清楚楚。那種穿越百年的生命連結感真的很奇妙！",
+        "position": 0,
+        "parent_id": null,
+        "author_marker": false,
+        "is_recommendation": false
+      },
+      {
+        "id": "DU0gvTyk830",
+        "url": "https://www.threads.com/@tai_wan_lan/post/DU0gvTyk830",
+        "author": "tai_wan_lan",
+        "text": "臺灣總督府職員錄系統\nwho.ith.sinica.edu.tw",
+        "position": 1,
+        "parent_id": null,
+        "author_marker": true,
+        "is_recommendation": false
+      },
+      {
+        "id": "DU0iKvbE2Zj",
+        "url": "https://www.threads.com/@tai_wan_lan/post/DU0iKvbE2Zj",
+        "author": "tai_wan_lan",
+        "text": "💡 幾個搜尋小技巧分享：\n女性長輩：建議在姓氏後加上「氏」，例如「陳氏進」、「林氏查某」。\n查不到很正常：可能是有日本名字，或是當時並非任職於官署。\n當時台籍菁英多任職基層公務員、公學校「訓導」（老師）、警察或基層醫護；高階職位（高等官）則多由日本人擔任。",
+        "position": 2,
+        "parent_id": "DU0gvTyk830",
+        "author_marker": true,
+        "is_recommendation": false
+      },
+      {
+        "id": "DU0jj4lD5mE",
+        "url": "https://www.threads.com/@gwenpig/post/DU0jj4lD5mE",
+        "author": "gwenpig",
+        "text": "連勝文可以查，他們全家半山四腳",
+        "position": 3,
+        "parent_id": null,
+        "author_marker": false,
+        "is_recommendation": false
+      },
+      {
+        "id": "DU0orKZCRKA",
+        "url": "https://www.threads.com/@fick_890604/post/DU0orKZCRKA",
+        "author": "fick_890604",
+        "text": "同場加映台灣總督府旅券（護照）資料庫：passport.ith.sinica.edu.tw",
+        "position": 6,
+        "parent_id": null,
+        "author_marker": false,
+        "is_recommendation": false
+      },
+      {
+        "id": "DU0r6MYk5vy",
+        "url": "https://www.threads.com/@tai_wan_lan/post/DU0r6MYk5vy",
+        "author": "tai_wan_lan",
+        "text": "搭配起來就更了解自己家裡的歷史了",
+        "position": 7,
+        "parent_id": "DU0orKZCRKA",
+        "author_marker": true,
+        "is_recommendation": false
+      },
+      {
+        "id": "DU0tdyRgYDi",
+        "url": "https://www.threads.com/@a._.kaka/post/DU0tdyRgYDi",
+        "author": "a._.kaka",
+        "text": "以為你阿祖是林獻堂",
+        "position": 8,
+        "parent_id": null,
+        "author_marker": false,
+        "is_recommendation": false
+      },
+      {
+        "id": "DU0uDbjk2vq",
+        "url": "https://www.threads.com/@tai_wan_lan/post/DU0uDbjk2vq",
+        "author": "tai_wan_lan",
+        "text": "不是哦 是範例😛",
+        "position": 9,
+        "parent_id": "DU0tdyRgYDi",
+        "author_marker": true,
+        "is_recommendation": false
+      },
+      {
+        "id": "DU1A4fHEqQs",
+        "url": "https://www.threads.com/@ciming_lin/post/DU1A4fHEqQs",
+        "author": "ciming_lin",
+        "text": "現在為什麼按了查詢就一直跳回首頁？",
+        "position": 13,
+        "parent_id": null,
+        "author_marker": false,
+        "is_recommendation": false
+      },
+      {
+        "id": "DU1tNrtEyXq",
+        "url": "https://www.threads.com/@tai_wan_lan/post/DU1tNrtEyXq",
+        "author": "tai_wan_lan",
+        "text": "可以到戶政事務所查詢唷",
+        "position": 16,
+        "parent_id": "DU1XjjbE57I",
+        "author_marker": true,
+        "is_recommendation": false
+      },
+      {
+        "id": "DU1_w5SDxUL",
+        "url": "https://www.threads.com/@qwer432175/post/DU1_w5SDxUL",
+        "author": "qwer432175",
+        "text": "？？？可以查的到他嗎？",
+        "position": 17,
+        "parent_id": null,
+        "author_marker": false,
+        "is_recommendation": false
+      }
+    ],
+    "profile": null
+  },
+  "expected_ids": [
+    "DU0gvTyk830",
+    "DU0iKvbE2Zj"
+  ]
+}

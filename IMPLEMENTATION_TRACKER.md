@@ -12,9 +12,9 @@ Status describes verified implementation, not proposed features. Update this fil
 |---|---|---|
 | M1 Anonymous-browser feasibility | Initial probe complete | Supplied canonical post and profile returned HTTP 200; fresh Chromium contexts; JSON and screenshots saved locally. Share URL subsequently verified in M3 and live CLI acceptance; broader conversation structures remain unevaluated. |
 | M2 Contracts and validation | Implemented and fixture-tested | Zod request/evidence/result/usage/trace contracts and pure result assembly; field-selection and uncertainty tests. See `CONTRACTS.md`. Probe JSON remains separate from the result schema. |
-| M3 Structural acquisition | Initial structural path implemented and verified | Separate post/profile evidence; recommendation exclusion; canonical/share live checks; fresh contexts. Reply relationships remain unknown, completeness false, and additional loading/expansion is not implemented. |
+| M3 Structural acquisition | Initial structural path implemented and verified | Separate post/profile evidence; recommendation exclusion; canonical/share live checks; fresh contexts. Recognized within-group vertical connectors now populate parent IDs; unknown roots and missing text remain conservative. Completeness false; no additional loading/expansion. |
 | M4 End-to-end Agent | Implemented; deterministic workflow tested | Natural-language CLI, SDK, bounded tools and result assembly; live canonical/share all-fields and profile-name-only requests verified. |
-| M5 Continuations and tracing | Narrow live regression passed | Reader-reply failure reproduced, prompt corrected, three recorded-case model runs and fresh share run passed. Source text/order, usage and sanitized traces verified. Broad accuracy and crash recovery remain open. |
+| M5 Continuations and tracing | Narrow live regression passed | Prompt-only reader-reply failures led to connector extraction and deterministic ancestry eligibility. Three recorded cases passed three model runs each; fresh tai_wan_lan/multipart/share runs passed. Source text/order, usage and sanitized traces verified. Broad accuracy and crash recovery remain open. |
 | M6 Delivery | Examples and local clean-install check complete; publication pending | Sanitized share result/trace and live-check summary under `examples/`. Temporary `npm ci` and offline suite passed using cached browsers. No remote or new-machine browser-install check. |
 
 ## Completed implementation
@@ -59,7 +59,7 @@ M3 live acquisition:
 
 - Canonical URL: HTTP 200, two conversation nodes, recommendations excluded.
 - Assignment share URL `https://www.threads.com/share/GW3EPb5M8/`: HTTP 200, resolved to `/@whoscall_tw/post/Dd0_RGwH4K7` (with a tracking query), four conversation nodes. Includes both an author continuation candidate and a reader/author exchange; the later live acceptance checks correctly excluded the reader reply after the prompt fix.
-- All parent IDs remain null and conversation completeness false. No additional loading or content expansion attempted.
+- At the M3 capture all parent IDs were null. Subsequent connector extraction now records recognized within-group parent edges; conversation completeness remains false. No additional loading or content expansion attempted.
 
 Local evidence (ignored by Git, not guaranteed to accompany a clone):
 
@@ -83,14 +83,14 @@ Local evidence (ignored by Git, not guaranteed to accompany a clone):
 | Screenshot inspection | Sign-in overlay observed. |
 | LLM/model usage | Live `gpt-4.1-mini`: canonical/share all-fields and profile-only runs passed; usage 821/872/120 tokens. |
 | crapper / dryer / mutator | Not run: not installed. |
-| End-to-end assignment acceptance | Three live CLI cases checked; reader-reply and anonymous multipart regressions each passed in three model runs. Broader accuracy, exhaustive extraction and publication not established. |
-| Current offline suite | 49 pass, 2 paid live tests skipped by default; clean temporary dependency install also passed. |
+| End-to-end assignment acceptance | Three live CLI cases checked; reader-reply, anonymous multipart and structural reader-branch regressions each passed in three model runs. Broader accuracy, exhaustive extraction and publication not established. |
+| Current offline suite | 52 pass, 3 paid live tests skipped by default. Earlier clean temporary dependency installation passed with 49 offline tests. |
 
 ## Next steps
 
 1. Configure the agreed GitHub remote and publish reviewed code/examples. No destination is currently configured.
-2. Broaden continuation evaluation if time permits. The recorded share case reproduced the old prompt's false-positive apology; the revised prompt excluded it in three model runs and a fresh live share run. The anonymous multipart case also passed three model runs without sequence badges. See `examples/README.md` for the user's login-dependent badge finding; these two cases are not a broad accuracy benchmark.
-3. Verify browser installation on a new machine if required. Clean temporary `npm ci` and 49 offline tests passed here, but reused the existing Playwright browser cache. The two paid live tests are opt-in and skipped by default.
+2. Broaden continuation evaluation if time permits. The recorded share case reproduced the old prompt's false-positive apology; the revised prompt excluded it in three model runs and a fresh live share run. The anonymous multipart case also passed three model runs without sequence badges. A new reader-branch case checks recognized connector ancestry and also passed three model runs. See `examples/README.md` for connector findings and limitations; these three cases are not a broad accuracy benchmark.
+3. Verify browser installation on a new machine if required. Clean temporary `npm ci` and 49 offline tests passed here, but reused the existing Playwright browser cache. The three paid live tests are opt-in and skipped by default.
 4. Extend acquisition/expansion only for demonstrated incomplete cases; no exhaustive-loading claim is permitted. CLI egress remains application-level public-HTTPS protection, not an OS sandbox. Abrupt termination/crash persistence remains unimplemented.
 
 ## Repository state at planning checkpoint

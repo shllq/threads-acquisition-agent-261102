@@ -35,7 +35,7 @@ Plans, schemas and milestone labels do not amend the assignment. This report is 
 
 | ID | Status / remaining work |
 |---|---|
-| D1 GitHub source/dependencies/setup | Lockfile and setup instructions exist. A clean temporary `npm ci` and offline suite passed using the existing browser cache. No remote, published link or new-machine browser-install check. |
+| D1 GitHub source/dependencies/setup | Lockfile and setup instructions exist. A temporary checkout with empty npm/browser caches passed dependency installation, fresh Chromium download, 54 offline tests and canonical/share live CLI checks on macOS arm64 / Node 26.12.0. No remote or published link; another machine/OS and the Node 22 minimum remain unverified. |
 | D2 CLI examples/result/log | README has runnable original-style message; sanitized successful share result/trace JSON and an acceptance summary are committed under `examples/`. |
 | D3 README | Design, setup, validation, limitations, AI assistance and actual live model findings documented. |
 | D4 JSON terminal/file | CLI writes result to stdout and `result.json`, trace to `trace.json`; errors use an error object and nonzero exit. |
@@ -51,12 +51,12 @@ Plans, schemas and milestone labels do not amend the assignment. This report is 
 - Fresh live canonical/share all-fields runs completed with partial results (821/872 tokens); profile-name-only returned exactly that field (120 tokens).
 - The old classifier selected a reader reply on the recorded share case. The revised prompt passed three independent model runs and fresh live share acquisition; see `examples/README.md` for scope and evidence.
 - The anonymous `@wheretogo_blue` multipart regression retained all three manually labeled continuations in order in three model runs, preserving source text and partial status without sequence badges. The user's logged-in/logged-out screenshots explain the badge difference for this example; no private login state is used.
-- Clean temporary dependency installation and the offline suite passed; browser binaries came from the existing machine cache.
+- Fresh-install follow-up: a temporary checkout with empty npm and Playwright caches passed `npm ci` (zero audit vulnerabilities), `npx playwright install chromium` (Chromium v1248) and 54 offline tests, with 3 paid regressions skipped. Canonical/share CLI checks from that install returned HTTP 200 for posts/profiles, expected continuations, preserved source text and partial results (875/927 tokens). Tested on macOS arm64 / Node 26.12.0, not another machine/OS or Node 22.
 - Connector-first follow-up: fresh tai_wan_lan, multipart and share runs returned two/three/one expected continuations (1,891/2,460/921 tokens). All three recorded cases passed three model runs each. Seven ambiguous/missing text blocks remain on tai_wan_lan; incomplete ancestry is not filled in.
-- **No broad model-accuracy benchmark, new-machine browser setup, crash-recovery validation or GitHub delivery yet.**
+- **No broad model-accuracy benchmark, other-machine/OS or Node 22 setup check, crash-recovery validation or GitHub delivery yet.**
 
 ## Next
 
 1. Agree on the GitHub destination, configure a remote and publish the reviewed source/examples.
 2. If more evaluation time is available, test additional genuine-continuation and reader-reply conversations; current regressions cover reader-reply exclusion, an anonymous multipart conversation and recorded structural reader branches.
-3. Keep partial/uncertain statuses where evidence is incomplete. New-machine browser installation remains unchecked; do not claim exhaustive extraction.
+3. Keep partial/uncertain statuses where evidence is incomplete; do not claim exhaustive extraction. Fresh downloads passed locally, but another machine/OS and Node 22 remain unchecked.
